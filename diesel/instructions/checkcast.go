@@ -3,7 +3,7 @@ package instructions
 import (
 	"../runtime"
 	"../../utils"
-	"../../types"
+	"../oil/types"
 			"../variator"
 	"reflect"
 )
@@ -28,7 +28,7 @@ func (s I_checkcast)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 
-	//ctx.Clazz.(*clazz.ClassFile).GetConstant(index)
+	//ctx.Clazz.(*binary.ClassFile).GetConstant(index)
 	if ref.(*types.Jreference).Reference.(*types.Jobject).ClassTypeIndex != index {
 		except, _ := variator.AllocExcept(variator.ClassCastException)
 		ctx.Throw(except)

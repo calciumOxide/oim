@@ -1,7 +1,7 @@
 package instructions
 
 import (
-	"../../types"
+	"../oil/types"
 	"../runtime"
 	"../../utils"
 		)

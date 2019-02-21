@@ -3,11 +3,11 @@ package instructions
 import (
 	"../runtime"
 	"../../utils"
-	"../../types"
+	"../oil/types"
 	"reflect"
 	"../variator"
-	"../../loader/clazz"
-	"../../loader/clazz/item"
+	"../../loader/binary"
+	"../../loader/binary/item"
 )
 
 type I_instanceof struct {
@@ -37,7 +37,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 	name, _ := ctx.Clazz.GetConstant(cp.Info.(*item.Class).NameIndex)
-	typeClass := clazz.GetClass(name.Info.(*item.Utf8).Str)
+	typeClass := binary.GetClass(name.Info.(*item.Utf8).Str)
 	
 	o := &types.Jreference{}
 	if reflect.TypeOf(obj) == reflect.TypeOf(&types.Jarray{}) {
@@ -45,12 +45,12 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 	} else {
 		o = obj.(*types.Jreference)
 	}
-	if reflect.TypeOf(o.ElementType) == reflect.TypeOf(&clazz.ClassFile{}) {
-		if o.ElementType.(*clazz.ClassFile).AccessFlags == clazz.ACC_INTERFACE {
-			if typeClass.AccessFlags&clazz.ACC_INTERFACE == clazz.ACC_INTERFACE {
+	if reflect.TypeOf(o.ElementType) == reflect.TypeOf(&binary.ClassFile{}) {
+		if o.ElementType.(*binary.ClassFile).AccessFlags == binary.ACC_INTERFACE {
+			if typeClass.AccessFlags&binary.ACC_INTERFACE == binary.ACC_INTERFACE {
 				cn, _ := typeClass.GetConstant(typeClass.ThisClass)
-				tn, _ := o.ElementType.(*clazz.ClassFile).GetConstant(o.ElementType.(*clazz.ClassFile).ThisClass)
-				sc := clazz.GetClass(tn.Info.(*item.Utf8).Str)
+				tn, _ := o.ElementType.(*binary.ClassFile).GetConstant(o.ElementType.(*binary.ClassFile).ThisClass)
+				sc := binary.GetClass(tn.Info.(*item.Utf8).Str)
 				for ; ; {
 					if cn.Info.(*item.Utf8).Str == tn.Info.(*item.Utf8).Str {
 						ctx.CurrentFrame.PushFrame(types.Jint(1))
@@ -61,7 +61,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 					}
 					tn, _ = sc.GetConstant(sc.ThisClass)
 					sn, _ := sc.GetConstant(sc.SuperClass)
-					sc = clazz.GetClass(sn.Info.(*item.Utf8).Str)
+					sc = binary.GetClass(sn.Info.(*item.Utf8).Str)
 				}
 			} else {
 				if typeClass.SuperClass == 0 {
@@ -70,17 +70,17 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 				}
 			}
 		} else {
-			if typeClass.AccessFlags&clazz.ACC_INTERFACE == clazz.ACC_INTERFACE {
+			if typeClass.AccessFlags&binary.ACC_INTERFACE == binary.ACC_INTERFACE {
 				for ; ; {
-					is := o.ElementType.(*clazz.ClassFile).Interfaces
+					is := o.ElementType.(*binary.ClassFile).Interfaces
 					for ii := 0; ii < len(is); ii++ {
-						in, _ := o.ElementType.(*clazz.ClassFile).GetConstant(is[ii])
+						in, _ := o.ElementType.(*binary.ClassFile).GetConstant(is[ii])
 						cn, _ := typeClass.GetConstant(typeClass.ThisClass)
 						if in.Info.(*item.Utf8).Str == cn.Info.(*item.Utf8).Str {
 							ctx.CurrentFrame.PushFrame(types.Jint(1))
 							return nil
 						}
-						inf := clazz.GetClass(in.Info.(*item.Utf8).Str)
+						inf := binary.GetClass(in.Info.(*item.Utf8).Str)
 						for ; ; {
 							if inf != nil && inf.SuperClass != 0 {
 								in, _ = inf.GetConstant(inf.ThisClass)
@@ -89,21 +89,21 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 									return nil
 								}
 								super, _ := inf.GetConstant(inf.SuperClass)
-								inf = clazz.GetClass(super.Info.(*item.Utf8).Str)
+								inf = binary.GetClass(super.Info.(*item.Utf8).Str)
 							}
 
 						}
 					}
-					if o == nil || o.ElementType.(*clazz.ClassFile).SuperClass == 0 {
+					if o == nil || o.ElementType.(*binary.ClassFile).SuperClass == 0 {
 						break
 					}
-					sn, _ := o.ElementType.(*clazz.ClassFile).GetConstant(o.ElementType.(*clazz.ClassFile).SuperClass)
-					is = clazz.GetClass(sn.Info.(*item.Utf8).Str).Interfaces
+					sn, _ := o.ElementType.(*binary.ClassFile).GetConstant(o.ElementType.(*binary.ClassFile).SuperClass)
+					is = binary.GetClass(sn.Info.(*item.Utf8).Str).Interfaces
 				}
 			} else {
 				cn, _ := typeClass.GetConstant(typeClass.ThisClass)
-				tn, _ := o.ElementType.(*clazz.ClassFile).GetConstant(o.ElementType.(*clazz.ClassFile).ThisClass)
-				sc := clazz.GetClass(tn.Info.(*item.Utf8).Str)
+				tn, _ := o.ElementType.(*binary.ClassFile).GetConstant(o.ElementType.(*binary.ClassFile).ThisClass)
+				sc := binary.GetClass(tn.Info.(*item.Utf8).Str)
 				for ; ; {
 					if cn.Info.(*item.Utf8).Str == tn.Info.(*item.Utf8).Str {
 						ctx.CurrentFrame.PushFrame(types.Jint(1))
@@ -114,7 +114,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 					}
 					tn, _ = sc.GetConstant(sc.ThisClass)
 					sn, _ := sc.GetConstant(sc.SuperClass)
-					sc = clazz.GetClass(sn.Info.(*item.Utf8).Str)
+					sc = binary.GetClass(sn.Info.(*item.Utf8).Str)
 				}
 			}
 		}

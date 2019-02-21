@@ -1,7 +1,7 @@
 package variator
 
 import "../lube"
-import "../../types"
+import "../oil/types"
 
 func AllocExcept(et ExceptType) (interface{}, error) {
 	 return EXCEPT_MAP[et].(func()(*types.Jreference, error))()

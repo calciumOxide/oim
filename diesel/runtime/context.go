@@ -1,10 +1,10 @@
 package runtime
 
-import "../../types"
-import "../../loader/clazz"
 import (
-	"../../loader/clazz/attribute"
 	"reflect"
+	"../oil/types"
+	"../../loader/binary"
+	"../../loader/binary/attribute"
 )
 
 type Context struct {
@@ -15,11 +15,11 @@ type Context struct {
 	FrameStack        []*Frame
 	CurrentAborigines *Aborigines
 	AboriginesStack   []*Aborigines
-	CurrentMethod     *clazz.Method
-	MethodStack       []*clazz.Method
+	CurrentMethod     *binary.Method
+	MethodStack       []*binary.Method
 	Opoos             bool
-	Clazz *clazz.ClassFile
-	ClazzStack []*clazz.ClassFile
+	Clazz *binary.ClassFile
+	ClazzStack []*binary.ClassFile
 }
 
 type Frame struct {
@@ -37,7 +37,7 @@ type Aborigines struct {
 //	Value interface{}
 //}
 
-func (ctx *Context)InvokeMethod(method *clazz.Method, args []interface{}) *Context {
+func (ctx *Context)InvokeMethod(method *binary.Method, args []interface{}) *Context {
 	callee := &Context{
 		PC: 0,
 		CurrentFrame: &Frame{
@@ -74,7 +74,7 @@ func (s *Context)PushContext(ctx *Context) error {
 	s.CurrentMethod = ctx.CurrentMethod
 
 	s.CodeStack = append(s.CodeStack, s.Code)
-	a, _ := ctx.CurrentMethod.GetAttribute(clazz.CODE_ATTR)
+	a, _ := ctx.CurrentMethod.GetAttribute(binary.CODE_ATTR)
 	ctx.Code = a.AttributeItem.(*attribute.Codes).Code
 
 	return nil
@@ -116,7 +116,7 @@ func (s *Context)Handle() error {
 	if (!s.Opoos) {
 		return nil
 	}
-	attr, _ := s.CurrentMethod.GetAttribute(clazz.CODE_ATTR)
+	attr, _ := s.CurrentMethod.GetAttribute(binary.CODE_ATTR)
 	codes := attr.AttributeItem.(*attribute.Codes)
 	if codes.ExceptTableLength > 0 {
 		i := uint16(0)

@@ -4,7 +4,7 @@ import (
 	"../runtime"
 	"../../utils"
 	"../variator"
-	"../../types"
+	"../oil/types"
 	"reflect"
 )
 

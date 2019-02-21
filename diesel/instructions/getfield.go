@@ -3,10 +3,10 @@ package instructions
 import (
 	"../runtime"
 	"../../utils"
-	"../../types"
+	"../oil/types"
 	"reflect"
 	"../variator"
-		"../../loader/clazz/item"
+		"../../loader/binary/item"
 )
 
 type I_getfield struct {

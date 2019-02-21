@@ -2,7 +2,7 @@ package instructions
 
 import "../runtime"
 import "../../utils"
-import "../../loader/clazz"
+import "../../loader/binary"
 
 var INSTRUCTION_MAP = make(map[Instructions]Storker)
 
@@ -16,7 +16,7 @@ type Storker interface {
 func (s Instructions)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "%x \n", s)
 	ctx = INSTRUCTION_MAP[s].Test()
-	ctx.Clazz = clazz.GetClass("com/guazi/znkf/call/aftermarket/bg/ApiApplication")
+	ctx.Clazz = binary.GetClass("com/guazi/znkf/call/aftermarket/bg/ApiApplication")
 	ctx.PC += 1
 	INSTRUCTION_MAP[s].Stroke(ctx)
 	ctx.Handle()

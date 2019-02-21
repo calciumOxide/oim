@@ -1,6 +1,6 @@
 package lube
 
-import "../../types"
+import "../oil/types"
 
 func AllocArray(ls... uint32) (interface{}, error) {
 	return allocArray(ls)

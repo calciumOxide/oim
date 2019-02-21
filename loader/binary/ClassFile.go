@@ -1,6 +1,4 @@
-package clazz
-
-import "./item"
+package binary
 
 type ClassFile struct {
 	Magic uint32 //魔数
@@ -27,26 +25,4 @@ func AllocClassFile() *ClassFile {
 
 func (s *ClassFile) GetConstant(index uint16) (*ConstantPool, error) {
 	return s.ConstantPool[index - 1], nil
-}
-
-var CLASS_MAP = make(map[string] *ClassFile)
-
-func GetClass(className string) *ClassFile {
-	return CLASS_MAP[className]
-}
-
-
-func (s *ClassFile) GetMethod(andType *item.NameAndType) *Method {
-	for i := uint16(0); i < s.MethodsCount; i++ {
-		//method := s.Methods[i]
-		//if !method.IsStatic() && method.GetName() == andType.GetName() && method.GetDescriptor() == andType.GetDescriptor() {
-		//	return method
-		//}
-	}
-	if s.SuperClass == 0 {
-		return nil
-	}
-	pool, _ := s.GetConstant(s.SuperClass)
-	superClass := GetClass(pool.Info.(*item.Class).GetName())
-	return superClass.GetMethod(andType)
 }

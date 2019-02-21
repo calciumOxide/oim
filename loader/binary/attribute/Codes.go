@@ -11,7 +11,7 @@ type Codes struct {
 	ExceptTable       []*ExceptTable
 	AttributeCount    uint16
 	Attributes        []interface{}
-	//Attributes        []*clazz.Attribute   包依赖
+	//Attributes        []*binary.Attribute   包依赖
 	//本规范中定义的、可以出现在 Code 属性的属性表中的成员只能是 LineNumberTable (§4.7.12)，LocalVariableTable(§4.7.13)，LocalVariableTypeTable(§4.7.14)和 StackMapTable(§4.7.4)属性。
 }
 
@@ -22,7 +22,7 @@ type ExceptTable struct {
 	CatchType uint16 //如果 catch_type 项的值不为 0，那么它必须是对常量池的一个有效索引，常量池 在该索引处的项必须是 CONSTANT_Class_info(§4.4.1)
 }
 //包依赖
-//func AllocCodes(b []byte, cf *clazz.ClassFile) (*Codes, int) {
+//func AllocCodes(b []byte, cf *binary.ClassFile) (*Codes, int) {
 //	offset := 8
 //	v := Codes{
 //		MaxStack:   utils.BigEndian2Little4U2(b[:2]),
@@ -39,7 +39,7 @@ type ExceptTable struct {
 //	}
 //	v.AttributeCount = utils.BigEndian2Little4U2(b[offset : offset + 2])
 //	for i := uint16(0); i < v.AttributeCount; i++ {
-//		a, size := clazz.AllocAttribute(b[offset:], cf)
+//		a, size := binary.AllocAttribute(b[offset:], cf)
 //		v.Attributes = append(v.Attributes, a)
 //		offset += size
 //	}

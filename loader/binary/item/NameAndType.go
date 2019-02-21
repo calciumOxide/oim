@@ -8,7 +8,7 @@ type NameAndType struct {
 	Name            string
 	Descriptor      string
 
-	//ClassFile		clazz.ClassFile
+	//ClassFile		binary.ClassFile
 }
 
 func AllocNameAndTypeItem(b []byte) (*NameAndType, int) {

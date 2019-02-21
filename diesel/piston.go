@@ -1,6 +1,6 @@
 package diesel
 
-import "../loader/clazz/attribute"
+import "../loader/binary/attribute"
 import "./instructions"
 
 func Nozzle(codes attribute.Codes) (int, error) {

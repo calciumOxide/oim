@@ -4,7 +4,7 @@ import (
 	"../runtime"
 	"../../utils"
 	"../lube"
-	"../../types"
+	"../oil/types"
 )
 
 type I_anewarray struct {

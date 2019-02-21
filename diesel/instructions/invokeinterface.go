@@ -3,11 +3,11 @@ package instructions
 import (
 	"../runtime"
 	"../../utils"
-	"../../types"
+	"../oil/types"
 	"reflect"
 	"../variator"
-	"../../loader/clazz"
-	"../../loader/clazz/item"
+	"../../loader/binary"
+	"../../loader/binary/item"
 )
 
 type I_invokeinterface struct {
@@ -37,7 +37,7 @@ func (s I_invokeinterface)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 	methodInterface, _ := ctx.Clazz.GetConstant(methodIndex)
-	objectClass := object.(*types.Jreference).ElementType.(*clazz.ClassFile)
+	objectClass := object.(*types.Jreference).ElementType.(*binary.ClassFile)
 	andType := methodInterface.Info.(*item.NameAndType)
 	method := objectClass.GetMethod(andType)
 	if method == nil {

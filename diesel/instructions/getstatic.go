@@ -3,11 +3,11 @@ package instructions
 import (
 	"../runtime"
 	"../../utils"
-	"../../types"
+	"../oil/types"
 	"reflect"
 	"../variator"
-	"../../loader/clazz/item"
-	"../../loader/clazz"
+	"../../loader/binary/item"
+	"../../loader/binary"
 )
 
 type I_getstatic struct {
@@ -61,7 +61,7 @@ func (s I_getstatic)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 
-	cla := clazz.GetClass(cname.Info.(*item.Utf8).Str)
+	cla := binary.GetClass(cname.Info.(*item.Utf8).Str)
 	if cla.Fields != nil && len(cla.Fields) > 0 {
 		i := 0
 		for i = 0; i < len(cla.Fields); i++ {

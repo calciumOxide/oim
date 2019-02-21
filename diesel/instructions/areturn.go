@@ -3,7 +3,7 @@ package instructions
 import (
 	"../runtime"
 	"../../utils"
-	"../../loader/clazz"
+	"../../loader/binary"
 		)
 
 type I_areturn struct {
@@ -39,10 +39,10 @@ func (s I_areturn)Test() *runtime.Context {
 	a1 := new(runtime.Aborigines)
 	a1.Layers = append(a1.Layers, []uint32{1})
 
-	m2 := new(clazz.Method)
+	m2 := new(binary.Method)
 	m2.NameIndex = 2
 	m2.DescriptorIndex = 2
-	m1 := new(clazz.Method)
+	m1 := new(binary.Method)
 	m1.NameIndex = 1
 
 	return &runtime.Context{
@@ -55,7 +55,7 @@ func (s I_areturn)Test() *runtime.Context {
 		FrameStack: []*runtime.Frame{f1},
 
 		CurrentMethod: m2,
-		MethodStack: []*clazz.Method{m1},
+		MethodStack: []*binary.Method{m1},
 
 		CurrentAborigines: a2,
 		AboriginesStack: []*runtime.Aborigines{a1},

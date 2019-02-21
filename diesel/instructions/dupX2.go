@@ -3,7 +3,7 @@ package instructions
 import (
 	"../runtime"
 	"../../utils"
-	"../../types"
+	"../oil/types"
 		"../variator"
 )
 

@@ -1,4 +1,4 @@
-package clazz
+package binary
 
 import "./item"
 

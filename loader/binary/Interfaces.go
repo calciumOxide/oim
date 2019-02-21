@@ -1,4 +1,4 @@
-package clazz
+package binary
 
 type Interfaces struct {
 
