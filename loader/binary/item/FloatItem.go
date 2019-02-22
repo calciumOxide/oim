@@ -2,7 +2,7 @@ package item
 
 import "../../../utils"
 
-type Float struct {
+type FloatItemBin struct {
 	Bytes uint32 //按照 Big-Endian 的顺序存储
 	Value float32 
 	Overflow  bool
@@ -10,8 +10,8 @@ type Float struct {
 	NaN       bool
 }
 
-func AllocFloatItem(b []byte) (*Float, int) {
-	v := Float{
+func AllocFloatItem(b []byte) (*FloatItemBin, int) {
+	v := FloatItemBin{
 		Bytes: utils.BigEndian2Little4U4(b[:4]),
 	}
 	if v.Bytes == OVER_FLOW_FLOAT {

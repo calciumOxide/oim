@@ -44,7 +44,7 @@ func AllocAttribute(b []byte, cf *ClassFile) (*Attribute, int) {
 	b = b[6: v.AttributeLength + 6]
 	a := v.AttributeItem
 	constant, _ := cf.GetConstant(v.NameIndex)
-	v.AttributeName = AttributeName(constant.Info.(*item.Utf8).Str)
+	v.AttributeName = AttributeName(constant.Info.(*item.Utf8ItemBin).Str)
 	switch v.AttributeName {
 	case CONSTANT_VALUE_ATTR:
 		a, _ = attribute.AllocConstantValue(b)

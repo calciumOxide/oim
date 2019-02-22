@@ -2,7 +2,7 @@ package item
 
 import "../../../utils"
 
-type Class struct {
+type ClassItemBin struct {
 	NameIndex uint16 //对常量池的一个有效索引。常量池在该索引处的项必须是 CONSTANT_Utf8_info
 
 	//ClassFile *binary.ClassFile
@@ -17,8 +17,8 @@ type Class struct {
 //	return s.Name
 //}
 
-func AllocClassItem(b []byte) (*Class, int) {
-	v := new(Class)
+func AllocClassItem(b []byte) (*ClassItemBin, int) {
+	v := new(ClassItemBin)
 	v.NameIndex = utils.BigEndian2Little4U2(b[:2])
 	return v, 2
 }

@@ -1,14 +1,14 @@
 package item
 
 import "../../../utils"
-type Utf8 struct {
+type Utf8ItemBin struct {
 	Length uint16
 	Bytes []uint8 //字符串值的 byte 数组，bytes[]数组中每个成员的 byte 值都不会是 0， 也不在 0xf0 至 0xff 范围内
 	Str string
 }
 
-func AllocUtf8Item(b []byte) (*Utf8, int) {
-	v := new(Utf8)
+func AllocUtf8Item(b []byte) (*Utf8ItemBin, int) {
+	v := new(Utf8ItemBin)
 	v.Length = utils.BigEndian2Little4U2(b[:2])
 	v.Bytes = b[2 : 2 + v.Length]
 	for i:=uint16(0);  i<v.Length; {

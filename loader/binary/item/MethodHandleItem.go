@@ -2,13 +2,13 @@ package item
 
 import "../../../utils"
 
-type MethodHandle struct {
+type MethodHandleItemBin struct {
 	ReferenceKind ReferenceKind //reference_kind 项的值必须在 1 至 9 之间(包括 1 和 9)，它决定了方法句柄的类型。方法句柄类型的值表示方法句柄的字节码行为(Bytecode Behavior §5.4.3.5)
 	ReferenceIndex uint16
 }
 
-func AllocMethodHandleItem(b []byte) (*MethodHandle, int) {
-	return &MethodHandle{
+func AllocMethodHandleItem(b []byte) (*MethodHandleItemBin, int) {
+	return &MethodHandleItemBin{
 		ReferenceKind: ReferenceKind(b[0]),
 		ReferenceIndex: utils.BigEndian2Little4U2(b[1:3]),
 	}, 3

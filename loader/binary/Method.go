@@ -48,7 +48,7 @@ func (s *Method) GetAttribute(t AttributeName) (*Attribute, error) {
 func (s *Method) GetName() string {
 	if len(s.name) == 0{
 		pool, _ := s.ClassFile.GetConstant(s.NameIndex)
-		s.name = pool.Info.(*item.Utf8).Str
+		s.name = pool.Info.(*item.Utf8ItemBin).Str
 	}
 	return s.name
 }
@@ -56,7 +56,7 @@ func (s *Method) GetName() string {
 func (s *Method) GetDescriptor() string {
 	if len(s.descriptor) == 0 {
 		pool, _ := s.ClassFile.GetConstant(s.DescriptorIndex)
-		s.descriptor = pool.Info.(*item.Utf8).Str
+		s.descriptor = pool.Info.(*item.Utf8ItemBin).Str
 	}
 	return s.descriptor
 }

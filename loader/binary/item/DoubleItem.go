@@ -2,7 +2,7 @@ package item
 
 import "../../../utils"
 
-type Double struct {
+type DoubleItemBin struct {
 	ValueH    uint32
 	ValueL    uint32
 	Value     float64
@@ -11,8 +11,8 @@ type Double struct {
 	NaN       bool
 }
 
-func AllocDoubleItem(b []byte) (*Double, int) {
-	v := new(Double)
+func AllocDoubleItem(b []byte) (*DoubleItemBin, int) {
+	v := new(DoubleItemBin)
 	v.ValueH = utils.BigEndian2Little4U4(b[:4])
 	v.ValueL = utils.BigEndian2Little4U4(b[4:8])
 	l := (uint64(v.ValueH) << 32) + uint64(v.ValueL)

@@ -2,17 +2,17 @@ package item
 
 import "../../../utils"
 
-type NameAndType struct {
+type NameAndTypeItemBin struct {
 	NameIndex       uint16 //对常量池的有效索引，常量池在该索引处的项必须是 CONSTANT_Utf8_info(§4.4.7)结构，这个结构要么表示特殊的方法名<init>(§ 2.9)，要么表示一个有效的字段或方法的非限定名(Unqualified Name)
 	DescriptorIndex uint16 //对常量池的有效索引，常量池在该索引处的项必须是 CONSTANT_Utf8_info(§4.4.7)结构，这个结构表示一个有效的字段描述符(§ 4.3.2)或方法描述符(§4.3.3)
-	Name            string
-	Descriptor      string
+	//Name            string
+	//Descriptor      string
 
 	//ClassFile		binary.ClassFile
 }
 
-func AllocNameAndTypeItem(b []byte) (*NameAndType, int) {
-	return &NameAndType {
+func AllocNameAndTypeItem(b []byte) (*NameAndTypeItemBin, int) {
+	return &NameAndTypeItemBin {
 		NameIndex: utils.BigEndian2Little4U2(b[:2]),
 		DescriptorIndex: utils.BigEndian2Little4U2(b[2:4]),
 	}, 4
