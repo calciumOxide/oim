@@ -4,8 +4,9 @@ import (
 	"../../loader"
 	 "../../loader/binary"
 	 "../../loader/binary/item"
+	 "../../loader/binary/attribute"
 	"regexp"
-)
+	)
 
 type Class struct {
 
@@ -29,6 +30,7 @@ type Class struct {
 	Methods []*Method
 
 	constantPool *constantPool
+	attribute *attributer
 }
 
 type Field struct {
@@ -85,9 +87,6 @@ func GetClass(className string) *Class {
 		class = &Class{
 			ClassName: className,
 			ClassFile: cf,
-			constantPool: &constantPool{
-
-			},
 		}
 		class.inflation()
 		class.ClassName = className
@@ -106,6 +105,10 @@ func GetClass(className string) *Class {
 
 func (s *Class)inflation() {
 	cf := s.ClassFile
+	s.constantPool = &constantPool{
+		cp: cf.ConstantPool,
+	}
+	s.constantPool.inflateConstantPool()
 
 	superClassBin, _ := cf.GetConstant(cf.SuperClass)
 	superClassNameBin, _ := cf.GetConstant(superClassBin.Info.(*item.ClassItemBin).NameIndex)
@@ -209,11 +212,12 @@ type constantPool struct {
 	NameAndTypeItemPool        map[uint16] *NameAndTypeItem
 	StringItemPool             map[uint16] *StringItem
 	Utf8ItemPool               map[uint16] *Utf8Item
+	allItem 				   []interface{}
 }
 
 func (s *constantPool)inflateConstantPool() {
 	for i := uint16(0); i< uint16(len(s.cp)); i++ {
-
+		s.inflateConstantPoolIndex(i)
 	}
 
 }
@@ -248,6 +252,31 @@ func (s *constantPool)GetMethodRefItem(i uint16) *MethodRefItem {
 		s.inflateConstantPoolIndex(i)
 	}
 	return s.MethodRefItemPool[i]
+}
+
+func (s *constantPool)GetItem(i uint16) (interface{}, string) {
+	id := s.DoubleItemPool[i]
+	if id != nil {
+		return id, "D"
+	}
+	iF := s.FloatItemPool[i]
+	if iF != nil {
+		return iF, "F"
+	}
+	ij := s.FloatItemPool[i]
+	if ij != nil {
+		return ij, "J"
+	}
+	ii := s.FloatItemPool[i]
+	if ii != nil {
+		return ii, "I"
+	}
+	is := s.FloatItemPool[i]
+	if is != nil {
+		return is, "S"
+	}
+	return nil, ""
+
 }
 
 func (s *constantPool)inflateConstantPoolIndex(i uint16) {
@@ -486,3 +515,97 @@ type Utf8Item struct {
 	Str string
 }
 
+
+type attributer struct {
+	as []*binary.Attribute
+
+	ConstantValueAttr map[uint16] *ConstantValue
+	CodesAttr map[uint16] *attribute.Codes
+	StackMapTableAttr map[uint16] *attribute.StackMapTable
+
+	AnnotationConst map[uint16] *AnnotationConst
+}
+
+type ConstantValue struct {
+	Value interface{}
+}
+
+func (s *attributer) inflation(cp *constantPool) {
+	for i := uint16(0); i < uint16(len(s.as)); i++ {
+		name := s.as[i].AttributeName
+		switch name {
+			case binary.CONSTANT_VALUE_ATTR:
+				attr := s.as[i].AttributeItem.(*attribute.ConstantValue)
+				s.ConstantValueAttr[i] = &ConstantValue{
+					Value: cp.GetItem(attr.ConstantValueIndex),
+				}
+				break
+			case binary.CODE_ATTR:
+				s.CodesAttr[i] = s.as[i].AttributeItem.(*attribute.Codes)
+				break
+			case binary.STACK_MAP_TABLE_ATTR:
+				s.StackMapTableAttr[i] = s.as[i].AttributeItem.(*attribute.StackMapTable)
+				break
+			//case binary.EXCEPTIONS_ATTR:
+			//	a, _ = attribute.AllocExceptions(b)
+			//	break
+			//case binary.INNER_CLASSES_ATTR:
+			//	a, _ = attribute.AllocInnerClasses(b)
+			//	break
+			//case binary.ENCLOSING_METHOD_ATTR:
+			//	a, _ = attribute.AllocEnclosingMethod(b)
+			//	break
+			//case binary.SYNTHETIC_ATTR:
+			//	a, _ = attribute.AllocSynthetic(b)
+			//	break
+			//case binary.SIGNATURE_ATTR:
+			//	a, _ = attribute.AllocSignature(b)
+			//	break
+			//case binary.SOURCE_FILE_ATTR:
+			//	a, _ = attribute.AllocSourceFile(b)
+			//	break
+			//case binary.SOURCE_DEBUG_EXTENSION_ATTR:
+			//	a = &attribute.SourceDebugExtension{
+			//		DebugExtesion: b,
+			//	}
+			//	break
+			//case binary.LINE_NUMBER_TABLE_ATTR:
+			//	a, _ = attribute.AllocLineNumberTable(b)
+			//	break
+			//case binary.LOCAL_VARIABLE_TABLE_ATTR:
+			//	a, _ = attribute.AllocLocalVariableTable(b)
+			//	break
+			//case binary.LOCAL_VARIABLE_TYPE_TABLE_ATTR:
+			//	a, _ = attribute.AllocLocalVariableTypeTable(b)
+			//	break
+			//case binary.DEPRECATED_ATTR:
+			//	a = nil
+			//	break
+			//case binary.RUNTIME_VISIBLE_ANNOTATIONS_ATTR:
+			//	a, _ = attribute.AllocRuntimeVisibleAnnotations(b)
+			//	break
+			//case binary.RUNTIME_INVISIBLE_ANNOTATIONS_ATTR:
+			//	a, _ = attribute.AllocRuntimeInvisibleAnnotations(b)
+			//	break
+			//case binary.RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS_ATTR:
+			//	a, _ = attribute.AllocRuntimeVisibleParameterAnnotations(b)
+			//	break
+			//case binary.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS_ATTR:
+			//	a, _ = attribute.AllocRuntimeInvisibleParameterAnnotations(b)
+			//	break
+			//case binary.ANNOTATION_DEFAULT_ATTR:
+			//	a, _ = attribute.AllocAnnotationDefault(b)
+			//	break
+			//case binary.BOOTSTRAP_METHODS_ATTR:
+			//	a, _ = attribute.AllocBootstrapMethods(b)
+			//	break
+		default:
+			print("============================================================>>>>>>")
+		}
+	}
+}
+
+type AnnotationConst struct {
+	ConstElementValue *attribute.ConstElementValue
+	Value interface{}
+}
