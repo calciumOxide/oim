@@ -18,7 +18,7 @@ func (s I_areturn)Stroke(ctx *runtime.Context) error {
 
 	ref, _ := ctx.CurrentFrame.PopFrame()
 	index := ctx.CurrentMethod.DescriptorIndex
-	ctx.Class.ConstantPool.Get(index)
+	ctx.Class.ConstantPool.GetM(index)
 
 	ctx.PopContext()
 	ctx.CurrentFrame.PushFrame(ref)

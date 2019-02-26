@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"../oil/types"
 	"../oil"
-	"../../loader/binary"
 	"../../loader/binary/attribute"
 )
 
@@ -16,8 +15,8 @@ type Context struct {
 	FrameStack        []*Frame
 	CurrentAborigines *Aborigines
 	AboriginesStack   []*Aborigines
-	CurrentMethod     *binary.Method
-	MethodStack       []*binary.Method
+	CurrentMethod     *oil.Method
+	MethodStack       []*oil.Method
 	Opoos             bool
 	Class             *oil.Class
 	ClassStack        []*oil.Class
@@ -38,7 +37,7 @@ type Aborigines struct {
 //	Value interface{}
 //}
 
-func (ctx *Context)InvokeMethod(method *binary.Method, args []interface{}) *Context {
+func (ctx *Context)InvokeMethod(method *oil.Method, args []interface{}) *Context {
 	callee := &Context{
 		PC: 0,
 		CurrentFrame: &Frame{
