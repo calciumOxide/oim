@@ -3,6 +3,7 @@ package runtime
 import (
 	"reflect"
 	"../oil/types"
+	"../oil"
 	"../../loader/binary"
 	"../../loader/binary/attribute"
 )
@@ -18,8 +19,8 @@ type Context struct {
 	CurrentMethod     *binary.Method
 	MethodStack       []*binary.Method
 	Opoos             bool
-	Clazz *binary.ClassFile
-	ClazzStack []*binary.ClassFile
+	Class             *oil.Class
+	ClassStack        []*oil.Class
 }
 
 type Frame struct {

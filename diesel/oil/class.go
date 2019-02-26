@@ -29,7 +29,7 @@ type Class struct {
 	Fields []*Field
 	Methods []*Method
 
-	constantPool *constantPool
+	ConstantPool *constantPool
 	attribute *attributer
 }
 
@@ -105,10 +105,10 @@ func GetClass(className string) *Class {
 
 func (s *Class)inflation() {
 	cf := s.ClassFile
-	s.constantPool = &constantPool{
+	s.ConstantPool = &constantPool{
 		cp: cf.ConstantPool,
 	}
-	s.constantPool.inflateConstantPool()
+	s.ConstantPool.inflateConstantPool()
 
 	superClassBin, _ := cf.GetConstant(cf.SuperClass)
 	superClassNameBin, _ := cf.GetConstant(superClassBin.Info.(*item.ClassItemBin).NameIndex)
@@ -519,14 +519,32 @@ type Utf8Item struct {
 type attributer struct {
 	as []*binary.Attribute
 
-	ConstantValueAttr map[uint16] *ConstantValue
-	CodesAttr map[uint16] *attribute.Codes
-	StackMapTableAttr map[uint16] *attribute.StackMapTable
+	ConstantValueAttr                        map[uint16]*ConstantValue
+	CodesAttr                                map[uint16]*attribute.Codes
+	StackMapTableAttr                        map[uint16]*attribute.StackMapTable
+	ExceptionsAttr                           map[uint16]*attribute.Exceptions
+	InnerClassesAttr                         map[uint16]*attribute.InnerClasses
+	EnclosingMethodAttr                      map[uint16]*attribute.EnclosingMethod
+	SyntheticAttr                            map[uint16]*attribute.Synthetic
+	SignatureAttr                            map[uint16]*attribute.Signature
+	SourceFileAttr                           map[uint16]*attribute.SourceFile
+	SourceDebugExtensionAttr                 map[uint16]*attribute.SourceDebugExtension
+	LineNumberTableAttr                      map[uint16]*attribute.LineNumberTable
+	LocalVariableTableAttr                   map[uint16]*attribute.LocalVariableTable
+	LocalVariableTypeTableAttr               map[uint16]*attribute.LocalVariableTypeTable
+	DeprecatedAttr                           map[uint16]*attribute.Deprecated
+	RuntimeVisibleAnnotationsAttr            map[uint16]*attribute.RuntimeVisibleAnnotations
+	RuntimeInvisibleAnnotationsAttr          map[uint16]*attribute.RuntimeInvisibleAnnotations
+	RuntimeInvisibleParameterAnnotationsAttr map[uint16]*attribute.RuntimeInvisibleParameterAnnotations
+	RuntimeVisibleParameterAnnotationsAttr   map[uint16]*attribute.RuntimeVisibleParameterAnnotations
+	AnnotationDefaultAttr                    map[uint16]*attribute.AnnotationDefault
+	BootstrapMethodsAttr                     map[uint16]*attribute.BootstrapMethods
 
 	AnnotationConst map[uint16] *AnnotationConst
 }
 
 type ConstantValue struct {
+	Type string
 	Value interface{}
 }
 
@@ -536,8 +554,10 @@ func (s *attributer) inflation(cp *constantPool) {
 		switch name {
 			case binary.CONSTANT_VALUE_ATTR:
 				attr := s.as[i].AttributeItem.(*attribute.ConstantValue)
+				v, t := cp.GetItem(attr.ConstantValueIndex)
 				s.ConstantValueAttr[i] = &ConstantValue{
-					Value: cp.GetItem(attr.ConstantValueIndex),
+					Type: t,
+					Value: v,
 				}
 				break
 			case binary.CODE_ATTR:
@@ -546,61 +566,59 @@ func (s *attributer) inflation(cp *constantPool) {
 			case binary.STACK_MAP_TABLE_ATTR:
 				s.StackMapTableAttr[i] = s.as[i].AttributeItem.(*attribute.StackMapTable)
 				break
-			//case binary.EXCEPTIONS_ATTR:
-			//	a, _ = attribute.AllocExceptions(b)
-			//	break
-			//case binary.INNER_CLASSES_ATTR:
-			//	a, _ = attribute.AllocInnerClasses(b)
-			//	break
-			//case binary.ENCLOSING_METHOD_ATTR:
-			//	a, _ = attribute.AllocEnclosingMethod(b)
-			//	break
-			//case binary.SYNTHETIC_ATTR:
-			//	a, _ = attribute.AllocSynthetic(b)
-			//	break
-			//case binary.SIGNATURE_ATTR:
-			//	a, _ = attribute.AllocSignature(b)
-			//	break
-			//case binary.SOURCE_FILE_ATTR:
-			//	a, _ = attribute.AllocSourceFile(b)
-			//	break
-			//case binary.SOURCE_DEBUG_EXTENSION_ATTR:
-			//	a = &attribute.SourceDebugExtension{
-			//		DebugExtesion: b,
-			//	}
-			//	break
-			//case binary.LINE_NUMBER_TABLE_ATTR:
-			//	a, _ = attribute.AllocLineNumberTable(b)
-			//	break
-			//case binary.LOCAL_VARIABLE_TABLE_ATTR:
-			//	a, _ = attribute.AllocLocalVariableTable(b)
-			//	break
-			//case binary.LOCAL_VARIABLE_TYPE_TABLE_ATTR:
-			//	a, _ = attribute.AllocLocalVariableTypeTable(b)
-			//	break
-			//case binary.DEPRECATED_ATTR:
-			//	a = nil
-			//	break
-			//case binary.RUNTIME_VISIBLE_ANNOTATIONS_ATTR:
-			//	a, _ = attribute.AllocRuntimeVisibleAnnotations(b)
-			//	break
-			//case binary.RUNTIME_INVISIBLE_ANNOTATIONS_ATTR:
-			//	a, _ = attribute.AllocRuntimeInvisibleAnnotations(b)
-			//	break
-			//case binary.RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS_ATTR:
-			//	a, _ = attribute.AllocRuntimeVisibleParameterAnnotations(b)
-			//	break
-			//case binary.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS_ATTR:
-			//	a, _ = attribute.AllocRuntimeInvisibleParameterAnnotations(b)
-			//	break
-			//case binary.ANNOTATION_DEFAULT_ATTR:
-			//	a, _ = attribute.AllocAnnotationDefault(b)
-			//	break
-			//case binary.BOOTSTRAP_METHODS_ATTR:
-			//	a, _ = attribute.AllocBootstrapMethods(b)
-			//	break
+			case binary.EXCEPTIONS_ATTR:
+				s.ExceptionsAttr[i] = s.as[i].AttributeItem.(*attribute.Exceptions)
+				break
+			case binary.INNER_CLASSES_ATTR:
+				s.InnerClassesAttr[i] = s.as[i].AttributeItem.(*attribute.InnerClasses)
+				break
+			case binary.ENCLOSING_METHOD_ATTR:
+				s.EnclosingMethodAttr[i] = s.as[i].AttributeItem.(*attribute.EnclosingMethod)
+				break
+			case binary.SYNTHETIC_ATTR:
+				s.SyntheticAttr[i] = s.as[i].AttributeItem.(*attribute.Synthetic)
+				break
+			case binary.SIGNATURE_ATTR:
+				s.SignatureAttr[i] = s.as[i].AttributeItem.(*attribute.Signature)
+				break
+			case binary.SOURCE_FILE_ATTR:
+				s.SourceFileAttr[i] = s.as[i].AttributeItem.(*attribute.SourceFile)
+				break
+			case binary.SOURCE_DEBUG_EXTENSION_ATTR:
+				s.SourceDebugExtensionAttr[i] = s.as[i].AttributeItem.(*attribute.SourceDebugExtension)
+				break
+			case binary.LINE_NUMBER_TABLE_ATTR:
+				s.LineNumberTableAttr[i] = s.as[i].AttributeItem.(*attribute.LineNumberTable)
+				break
+			case binary.LOCAL_VARIABLE_TABLE_ATTR:
+				s.LocalVariableTableAttr[i] = s.as[i].AttributeItem.(*attribute.LocalVariableTable)
+				break
+			case binary.LOCAL_VARIABLE_TYPE_TABLE_ATTR:
+				s.LocalVariableTypeTableAttr[i] = s.as[i].AttributeItem.(*attribute.LocalVariableTypeTable)
+				break
+			case binary.DEPRECATED_ATTR:
+				break
+			case binary.RUNTIME_VISIBLE_ANNOTATIONS_ATTR:
+				s.RuntimeVisibleAnnotationsAttr[i] = s.as[i].AttributeItem.(*attribute.RuntimeVisibleAnnotations)
+				break
+			case binary.RUNTIME_INVISIBLE_ANNOTATIONS_ATTR:
+				s.RuntimeInvisibleAnnotationsAttr[i] = s.as[i].AttributeItem.(*attribute.RuntimeInvisibleAnnotations)
+				break
+			case binary.RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS_ATTR:
+				s.RuntimeVisibleParameterAnnotationsAttr[i] = s.as[i].AttributeItem.(*attribute.RuntimeVisibleParameterAnnotations)
+				break
+			case binary.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS_ATTR:
+				s.RuntimeInvisibleParameterAnnotationsAttr[i] = s.as[i].AttributeItem.(*attribute.RuntimeInvisibleParameterAnnotations)
+				break
+			case binary.ANNOTATION_DEFAULT_ATTR:
+				s.AnnotationDefaultAttr[i] = s.as[i].AttributeItem.(*attribute.AnnotationDefault)
+
+				break
+			case binary.BOOTSTRAP_METHODS_ATTR:
+				s.BootstrapMethodsAttr[i] = s.as[i].AttributeItem.(*attribute.BootstrapMethods)
+				break
 		default:
-			print("============================================================>>>>>>")
+			print("inflaction attr err.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 		}
 	}
 }
