@@ -9,13 +9,13 @@ type Class struct {
 	Name string
 }
 
-func (s *Class) GetName() string {
+//func (s *Class) GetName() string {
 	//if len(s.Name) == 0 {
 	//	pool, _ := s.ClassFile.GetConstant(s.NameIndex)
 	//	s.Name = pool.Info.(*Utf8).Str
 	//}
-	return s.Name
-}
+	//return s.Name
+//}
 
 func AllocClassItem(b []byte) (*Class, int) {
 	v := new(Class)

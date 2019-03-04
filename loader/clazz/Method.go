@@ -62,9 +62,15 @@ func (s *Method) GetDescriptor() string {
 }
 
 func (s *Method) IsStatic() bool {
-	return s.AccessFlags & ACC_STATIC == 1
+	return s.AccessFlags & ACC_STATIC > 0
 }
 
 func (s *Method) IsAbstarct() bool {
-	return s.AccessFlags & ACC_ABSTRACT == 1
+	return s.AccessFlags & ACC_ABSTRACT > 0
 }
+
+func (s *Method) IsPrivate() bool {
+	return s.AccessFlags & ACC_PRIVATE > 0
+}
+
+

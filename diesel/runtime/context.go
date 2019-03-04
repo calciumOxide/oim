@@ -75,7 +75,7 @@ func (s *Context)PushContext(ctx *Context) error {
 
 	s.CodeStack = append(s.CodeStack, s.Code)
 	a, _ := ctx.CurrentMethod.GetAttribute(clazz.CODE_ATTR)
-	ctx.Code = a.AttributeItem.(*attribute.Codes).Code
+	s.Code = a.AttributeItem.(*attribute.Codes).Code
 
 	return nil
 }

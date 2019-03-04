@@ -38,8 +38,10 @@ func (s I_invokeinterface)Stroke(ctx *runtime.Context) error {
 	}
 	methodInterface, _ := ctx.Clazz.GetConstant(methodIndex)
 	objectClass := object.(*types.Jreference).ElementType.(*clazz.ClassFile)
-	andType := methodInterface.Info.(*item.NameAndType)
-	method := objectClass.GetMethod(andType)
+	andType, _ := ctx.Clazz.GetConstant(methodInterface.Info.(*item.MethodRef).NameAndTypeIndex)
+	nameCp, _ := ctx.Clazz.GetConstant(andType.Info.(*item.NameAndType).NameIndex)
+	descCp, _ := ctx.Clazz.GetConstant(andType.Info.(*item.NameAndType).DescriptorIndex)
+	method := objectClass.GetMethod(nameCp.Info.(*item.Utf8).Str, descCp.Info.(*item.Utf8).Str)
 	if method == nil {
 		except, _ := variator.AllocExcept(variator.MethodNotFindException)
 		ctx.Throw(except)
@@ -69,18 +71,19 @@ func (s I_invokeinterface)Test() *runtime.Context {
 	f.PushFrame(types.Jfloat(9.123456789012345))
 	f.PushFrame(&types.Jreference{
 		Reference: types.Jobject{},
+		ElementType: clazz.CLASS_MAP["com/oxide/A.class"],
 	})
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x0, 0x1, 0x1, 0x0},
+		Code: []byte{0x0, 0x0, 0xC, 0x1, 0x0},
 		CurrentFrame: f,
 		CurrentAborigines: a,
 	}
 }
 /**
 ======================================================================================
-		操作				||		调用动态方法
+		操作				||		调用接口方法
 ======================================================================================
 						||		invokeinterface
 						||------------------------------------------------------------

@@ -16,7 +16,7 @@ type Storker interface {
 func (s Instructions)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "%x \n", s)
 	ctx = INSTRUCTION_MAP[s].Test()
-	ctx.Clazz = clazz.GetClass("com/guazi/znkf/call/aftermarket/bg/ApiApplication")
+	ctx.Clazz = clazz.GetClass("com/oxide/A")
 	ctx.PC += 1
 	INSTRUCTION_MAP[s].Stroke(ctx)
 	ctx.Handle()
