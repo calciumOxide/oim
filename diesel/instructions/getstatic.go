@@ -88,7 +88,7 @@ func (s I_getstatic)Test() *runtime.Context {
 	fields["app"] = "bb"
 	f.PushFrame(types.Jreference{
 		Reference: types.Jobject{
-			ClassTypeIndex: 4,
+			Class: clazz.GetClass("com/oxide/A"),
 			Fileds: fields,
 		},
 	})

@@ -37,11 +37,11 @@ func (s I_invokespecial)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 	objectClass := object.(*types.Jreference).ElementType.(*clazz.ClassFile)
-	if objectClass.SuperClass == 0 {
-		except, _ := variator.AllocExcept(variator.AbstractMethodError)
-		ctx.Throw(except)
-		return nil
-	}
+	//if objectClass.SuperClass == 0 {
+	//	//	except, _ := variator.AllocExcept(variator.AbstractMethodError)
+	//	//	ctx.Throw(except)
+	//	//	return nil
+	//	//}
 
 	methodInterface, _ := ctx.Clazz.GetConstant(methodIndex)
 	andType, _ := ctx.Clazz.GetConstant(methodInterface.Info.(*item.MethodRef).NameAndTypeIndex)

@@ -8,7 +8,7 @@ func Nozzle(codes attribute.Codes) (int, error) {
 }
 
 func SteamCylinder() (int, error) {
-	i := instructions.Instructions(0xb7)
+	i := instructions.Instructions(0xb6)
 	i.Stroke(nil)
 	return 0, nil
 }

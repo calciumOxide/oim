@@ -1,7 +1,11 @@
 package clazz
 
 import "../../utils"
-import "./item"
+import (
+	"./item"
+	"reflect"
+	"../../types"
+)
 
 type Method struct {
 	AccessFlags AccessFlags
@@ -71,6 +75,100 @@ func (s *Method) IsAbstarct() bool {
 
 func (s *Method) IsPrivate() bool {
 	return s.AccessFlags & ACC_PRIVATE > 0
+}
+
+func (s *Method) IsProtected() bool {
+	return s.AccessFlags & ACC_PROTECTED > 0
+}
+
+func (s *Method) GetParmsType(str string) []string {
+	desc := []byte(str)
+	parmsType := []string{}
+	if len(desc) > 0 {
+		if desc[0] != '(' {
+			print("decode method params err.>>>>>>>>>>>>>>>>>>>>>>>")
+		}
+		outer:
+		for i := 1; i < len(desc); {
+			types := ""
+			inner:
+			switch desc[i] {
+			case '[':
+				types += string(desc[i])
+				i++
+				goto inner
+			case 'L':
+				if len(types) == 0 || types[len(types) - 1] == '[' {
+					types += string(desc[i])
+				}
+				i++
+				if desc[i] == ';' {
+					i++
+					break
+				}
+				types += string(desc[i])
+				desc[i] = 'L'
+				goto inner
+			case ')':
+				i = len(desc)
+				break outer
+			default:
+				types = string(desc[i])
+				i++
+				break
+			}
+			parmsType = append(parmsType, types)
+		}
+	}
+	return parmsType
+}
+func (s *Method) CheckParams(parmsType []string, args []interface{}) bool {
+	if len(parmsType) != len(args) {
+		return false
+	}
+	length := len(args)
+	for i := 0; i< length; i++ {
+		types := parmsType[i]
+		arg := args[length - 1 - i]
+		if !checkParams(types, arg) {
+			return false
+		}
+	}
+	return true
+}
+
+func checkParams(t string, arg interface{}) bool {
+	of := reflect.TypeOf(arg)
+	switch t[0] {
+	case '[':
+		return of == reflect.TypeOf(&types.Jarray{}) &&
+		checkParams(t[1:], arg)
+		break
+	case 'L':
+		return of == reflect.TypeOf(&types.Jreference{}) && 
+			(arg.(*types.Jreference).ElementType.(*ClassFile) == GetClass(t[1:]))
+		break
+	case 'B':
+		return of == reflect.TypeOf(types.Jbyte(0))
+	case 'C':
+		return of == reflect.TypeOf(types.Jchar(0))
+	case 'D':
+		return of == reflect.TypeOf(types.Jdouble(0))
+	case 'F':
+		return of == reflect.TypeOf(types.Jfloat(0))
+	case 'I':
+		return of == reflect.TypeOf(types.Jint(0))
+	case 'J':
+		return of == reflect.TypeOf(types.Jlong(0))
+	case 'S':
+		return of == reflect.TypeOf(types.Jshort(0))
+	case 'Z':
+		return of == reflect.TypeOf(types.Jboolean(true))
+	default:
+		return false
+		break
+	}
+	return false
 }
 
 

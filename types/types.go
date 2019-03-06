@@ -54,6 +54,6 @@ type Jarray struct {
 }
 
 type Jobject struct {
-	ClassTypeIndex uint16
+	Class interface{}
 	Fileds map[string]interface{}
 }

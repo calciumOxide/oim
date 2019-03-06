@@ -4,8 +4,10 @@ import (
 	"../runtime"
 	"../../utils"
 	"../../types"
-			"../variator"
+	"../variator"
 	"reflect"
+	"../../loader/clazz"
+	"../../loader/clazz/item"
 )
 
 type I_checkcast struct {
@@ -28,8 +30,9 @@ func (s I_checkcast)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 
-	//ctx.Clazz.(*clazz.ClassFile).GetConstant(index)
-	if ref.(*types.Jreference).Reference.(*types.Jobject).ClassTypeIndex != index {
+	objClassCp, _ := ctx.Clazz.GetConstant(index)
+	objClassNameCp, _ := ctx.Clazz.GetConstant(objClassCp.Info.(*item.Class).NameIndex)
+	if ref.(*types.Jreference).Reference.(*types.Jobject).Class.(*clazz.ClassFile) != clazz.GetClass(objClassNameCp.Info.(*item.Utf8).Str) {
 		except, _ := variator.AllocExcept(variator.ClassCastException)
 		ctx.Throw(except)
 		return nil
@@ -41,8 +44,8 @@ func (s I_checkcast)Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jreference{
 		Reference: &types.Jobject{
-			ClassTypeIndex: 0x0F0F,
-		},
+			Class: clazz.GetClass("com/oxide/A"),
+	},
 	})
 	f.PushFrame(33)
 

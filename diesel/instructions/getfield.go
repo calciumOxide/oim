@@ -6,6 +6,7 @@ import (
 	"../../types"
 	"reflect"
 	"../variator"
+		"../../loader/clazz"
 		"../../loader/clazz/item"
 )
 
@@ -45,7 +46,9 @@ func (s I_getfield)Stroke(ctx *runtime.Context) error {
 		ctx.Throw(except)
 		return nil
 	}
-	if jobject.ClassTypeIndex != cp.Info.(*item.FieldRef).ClassIndex {
+	objClassCp, _ := ctx.Clazz.GetConstant(cp.Info.(*item.FieldRef).ClassIndex)
+	objClassNameCp, _ := ctx.Clazz.GetConstant(objClassCp.Info.(*item.Class).NameIndex)
+	if jobject.Class.(*clazz.ClassFile) != clazz.GetClass(objClassNameCp.Info.(*item.Utf8).Str) {
 		except, _ := variator.AllocExcept(variator.ClassNotFindException)
 		ctx.Throw(except)
 		return nil
@@ -77,7 +80,7 @@ func (s I_getfield)Test() *runtime.Context {
 	fields["app"] = "bb"
 	f.PushFrame(types.Jreference{
 		Reference: types.Jobject{
-			ClassTypeIndex: 4,
+			Class: clazz.GetClass("com/oxide/A"),
 			Fileds: fields,
 		},
 	})

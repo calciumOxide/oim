@@ -38,21 +38,26 @@ type Aborigines struct {
 //}
 
 func (ctx *Context)InvokeMethod(method *clazz.Method, args []interface{}) *Context {
+	a, _ := method.GetAttribute(clazz.CODE_ATTR)
+	codes := a.AttributeItem.(*attribute.Codes)
 	callee := &Context{
 		PC: 0,
 		CurrentFrame: &Frame{
+			//Layers: make([]interface{}, codes.MaxStack),
 			Layers: []interface{}{},
 			Depth:  0,
 		},
 		CurrentAborigines: &Aborigines{
-			Layers: []interface{}{},
+			Layers: make([]interface{}, codes.MaxLocal),
 			Count:  0,
 		},
 		CurrentMethod: method,
+		Code: codes.Code,
 	}
 	if args != nil {
-		for i := 0; i < len(args); i++ {
-			callee.CurrentFrame.PushFrame(args[i])
+		length := len(args)
+		for i := 0; i > length; i++ {
+			callee.CurrentAborigines.SetAborigines(uint32(length -1 - i), args[i])
 		}
 	}
 	ctx.PushContext(callee)
@@ -74,8 +79,7 @@ func (s *Context)PushContext(ctx *Context) error {
 	s.CurrentMethod = ctx.CurrentMethod
 
 	s.CodeStack = append(s.CodeStack, s.Code)
-	a, _ := ctx.CurrentMethod.GetAttribute(clazz.CODE_ATTR)
-	s.Code = a.AttributeItem.(*attribute.Codes).Code
+	s.Code = ctx.Code
 
 	return nil
 }
@@ -136,7 +140,7 @@ func (s *Context)Handle() error {
 }
 
 func IsCatched(r *types.Jreference, et *attribute.ExceptTable) bool {
-	return r.Reference.(*types.Jobject).ClassTypeIndex == et.CatchType
+	return r.Reference.(*types.Jobject).Class == et.CatchType
 }
 
 

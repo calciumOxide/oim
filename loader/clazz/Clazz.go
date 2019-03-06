@@ -2,7 +2,10 @@ package clazz
 
 import "./item"
 import "../../utils"
-import "../butcher/rope"
+import (
+	"../butcher/rope"
+	"strings"
+)
 
 type ClassFile struct {
 	Magic uint32 //魔数
@@ -54,7 +57,7 @@ func (s *ClassFile) GetMethod(name, descriptor string) *Method {
 		method := s.Methods[i]
 		mNameCp, _ := s.GetConstant(method.NameIndex)
 		mDescCp, _ := s.GetConstant(method.DescriptorIndex)
-		if !method.IsStatic() && mNameCp.Info.(*item.Utf8).Str == name && mDescCp.Info.(*item.Utf8).Str == descriptor {
+		if mNameCp.Info.(*item.Utf8).Str == name && mDescCp.Info.(*item.Utf8).Str == descriptor {
 			return method
 		}
 	}
@@ -65,6 +68,38 @@ func (s *ClassFile) GetMethod(name, descriptor string) *Method {
 	superNameCp, _ := s.GetConstant(pool.Info.(*item.Class).NameIndex)
 	superClass := GetClass(superNameCp.Info.(*item.Utf8).Str)
 	return superClass.GetMethod(name, descriptor)
+}
+func (s *ClassFile) ExtendOf(t *ClassFile) bool {
+	if s == t {
+		return true
+	}
+	if s.SuperClass == 0 {
+		return false
+	}
+	superClassCp, _ := s.GetConstant(s.SuperClass)
+	superClassNameCp, _ := s.GetConstant(superClassCp.Info.(*item.Class).NameIndex)
+	superClass := GetClass(superClassNameCp.Info.(*item.Utf8).Str)
+	return superClass.ExtendOf(t)
+}
+func (s *ClassFile) EqualsPackage(c *ClassFile) bool {
+	if s == c {
+		return true
+	}
+	sCp, _ := s.GetConstant(s.ThisClass)
+	sNameCp, _ := s.GetConstant(sCp.Info.(*item.Class).NameIndex)
+	cCp, _ := c.GetConstant(c.ThisClass)
+	cNameCp, _ := c.GetConstant(cCp.Info.(*item.Class).NameIndex)
+	si := strings.LastIndex(sNameCp.Info.(*item.Utf8).Str, "/")
+	ci := strings.LastIndex(cNameCp.Info.(*item.Utf8).Str, "/")
+	sPackage := ""
+	cPackage := ""
+	if si != -1 {
+		sPackage = sNameCp.Info.(*item.Utf8).Str[:si]
+	}
+	if ci != -1 {
+		cPackage = cNameCp.Info.(*item.Utf8).Str[:ci]
+	}
+	return sPackage == cPackage
 }
 
 

@@ -4,6 +4,7 @@ import (
 	"../runtime"
 	"../../utils"
 	"../../types"
+	"../../loader/clazz"
 				)
 
 type I_goto struct {
@@ -32,7 +33,7 @@ func (s I_goto)Test() *runtime.Context {
 	fields["app"] = "bb"
 	f.PushFrame(types.Jreference{
 		Reference: types.Jobject{
-			ClassTypeIndex: 4,
+			Class: clazz.GetClass("com/oxide/A"),
 			Fileds: fields,
 		},
 	})

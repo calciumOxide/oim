@@ -29,7 +29,7 @@ func (s I_athrow)Test() *runtime.Context {
 	f2.PushFrame(uint32(2))
 	f2.PushFrame(&types.Jreference{
 		Reference: &types.Jobject{
-			ClassTypeIndex: 333,
+			Class: clazz.GetClass("com/oxide/A"),
 		},
 	})
 	f1 := new(runtime.Frame)
