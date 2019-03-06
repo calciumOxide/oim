@@ -42,6 +42,8 @@ type Jshort int16
 
 type Jboolean bool
 
+type Jaddress uint32
+
 type Jreference struct {
 	ElementType interface{}
 	Reference   interface{}

@@ -5,6 +5,7 @@ import "../../utils"
 import (
 	"../butcher/rope"
 	"strings"
+	"../../types"
 )
 
 type ClassFile struct {
@@ -100,6 +101,31 @@ func (s *ClassFile) EqualsPackage(c *ClassFile) bool {
 		cPackage = cNameCp.Info.(*item.Utf8).Str[:ci]
 	}
 	return sPackage == cPackage
+}
+func (s *ClassFile) GetConstantValue(u uint16) interface{} {
+	cp, _ := s.GetConstant(u)
+	switch cp.Tag {
+	case CLASS:
+		return nil
+	case STRING:
+		strCp, _ := s.GetConstant(cp.Info.(*item.String).StringIndex)
+		return &types.Jreference{
+			ElementType: "L",
+			Reference: &types.Jobject{
+				Class: GetClass("java/lang/String"),
+				Fileds: map[string]interface{}{"value" : strCp.Info.(*item.Utf8).Str},
+			},
+		}
+	case INTEGER:
+		return types.Jint(cp.Info.(*item.Integer).Value)
+	case FLOAT:
+		return types.Jfloat(cp.Info.(*item.Float).Value)
+	case LONG:
+		return types.Jlong(cp.Info.(*item.Long).Value)
+	case DOUBLE:
+		return types.Jdouble(cp.Info.(*item.Double).Value)
+	}
+	return nil
 }
 
 

@@ -5,6 +5,7 @@ import (
 	"./item"
 	"reflect"
 	"../../types"
+	"strings"
 )
 
 type Method struct {
@@ -122,6 +123,16 @@ func (s *Method) GetParmsType(str string) []string {
 	}
 	return parmsType
 }
+
+func (s *Method) GetReturnType(desc string) string {
+	index := strings.Index(desc, ")")
+	returnType := desc[index + 1 :]
+	if returnType[len(returnType) - 1] == ';' {
+		returnType = returnType[:len(returnType) - 2]
+	}
+	return returnType
+}
+
 func (s *Method) CheckParams(parmsType []string, args []interface{}) bool {
 	if len(parmsType) != len(args) {
 		return false
@@ -136,17 +147,33 @@ func (s *Method) CheckParams(parmsType []string, args []interface{}) bool {
 	}
 	return true
 }
+func (s2 *Method) CheckReturnType(s string, value interface{}) bool {
+	switch s[0] {
+	case 'V':
+		return value == nil
+	case 'B':
+	case 'C':
+	case 'I':
+	case 'S':
+	case 'Z':
+		return reflect.TypeOf(value) == reflect.TypeOf(types.Jint(0))
+	default:
+		return checkParams(s, value)
+	}
+	return false
+}
 
 func checkParams(t string, arg interface{}) bool {
 	of := reflect.TypeOf(arg)
 	switch t[0] {
 	case '[':
-		return of == reflect.TypeOf(&types.Jarray{}) &&
-		checkParams(t[1:], arg)
+		i := 0
+		for ;t[0] == '['; i++ {}
+		return of == reflect.TypeOf(&types.Jarray{}) && arg.(*types.Jarray).Dimension == uint32(i) && checkParams(t[i:], arg.(*types.Jarray).Reference)
 		break
 	case 'L':
 		return of == reflect.TypeOf(&types.Jreference{}) && 
-			(arg.(*types.Jreference).ElementType.(*ClassFile) == GetClass(t[1:]))
+			(arg.(*types.Jreference).ElementType.(*ClassFile).ExtendOf(GetClass(t[1:])))
 		break
 	case 'B':
 		return of == reflect.TypeOf(types.Jbyte(0))
