@@ -4,27 +4,33 @@ import (
 	"../runtime"
 	"../../utils"
 	"../../types"
-			"../../loader/clazz/item"
-)
+			)
 
-type I_retuen struct {
+type I_ret struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0xb1] = &I_retuen{}
+	INSTRUCTION_MAP[0xa9] = &I_ret{}
 }
 
-func (s I_retuen)Stroke(ctx *runtime.Context) error {
-	utils.Log(1, "retuen exce >>>>>>>>>\n")
+func (s I_ret)Stroke(ctx *runtime.Context) error {
+	utils.Log(1, "ret exce >>>>>>>>>\n")
 
-	methodDescCp, _ := ctx.Clazz.GetConstant(ctx.CurrentMethod.DescriptorIndex)
-	returnType := ctx.CurrentMethod.GetReturnType(methodDescCp.Info.(*item.Utf8).Str)
-	ctx.CurrentMethod.CheckReturnType(returnType, nil)
-	ctx.PopContext()
+	index := uint32(0)
+	if ctx.IsWide() {
+		index = uint32(ctx.Code[ctx.PC]) << 8 | uint32(ctx.Code[ctx.PC + 1])
+		ctx.PC += 2
+	} else {
+		index = uint32(ctx.Code[ctx.PC])
+		ctx.PC++
+	}
+
+	value, _ := ctx.CurrentAborigines.GetAborigines(index)
+	ctx.PC = value.(uint32)
 	return nil
 }
 
-func (s I_retuen)Test(octx *runtime.Context) *runtime.Context {
+func (s I_ret)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -41,11 +47,11 @@ func (s I_retuen)Test(octx *runtime.Context) *runtime.Context {
 }
 /**
 ======================================================================================
-		操作				||		无返回值的方法返回
+		操作				||		代码片段中返回
 ======================================================================================
-						||		retuen
+						||		ret
 						||------------------------------------------------------------
-						||
+						||		index
 						||------------------------------------------------------------
 						||		
 		格式				||------------------------------------------------------------
@@ -55,36 +61,29 @@ func (s I_retuen)Test(octx *runtime.Context) *runtime.Context {
 						||------------------------------------------------------------
 						||		
 ======================================================================================
-		结构				||		return = 177(0xb1)
+		结构				||		ret = 169(0xa9)
 ======================================================================================
 						||		...， →
-	   操作数栈			||------------------------------------------------------------
-						||		[empty]
+	   操作数栈			||------------------无变化------------------------------------
+						||		...， →
 ======================================================================================
 						||
-		描述				||		当前方法的返回值必须被声明为 void。如果当前方法是一个同步(声明为 synchronized)方法，那在方法调用时进入或者重入的管程应当被正确更新 状态或退出，就像当前线程执行了 monitorexit 指令一样。如果执行过程当
-         中没有异常被抛出的话，在当前栈帧操作数栈中所有其他的值都将会被丢弃
-         掉。
-指令执行后，解释器会恢复调用者的栈帧，并且把程序控制权交回到调用者。
+		描述				||		index 是一个 0 至 255 之间的无符号数，它代表一个当前栈帧(§2.6)的 局部变量表的索引值，在该索引位置应为一个 returnAddress 类型的局部变
+量，指令执行后，将该局部变量的值更新到 Java 虚拟机的 PC 寄存器中，令 程序从修改后的位置继续执行。
 
 						||
 ======================================================================================
 						||		
 						||
-	   运行时异常			||		如果虚拟机实现没有严格执行在§2.11.10 中规定的结构化锁定规则，导致 当前方法是一个同步方法，但当前线程在调用方法时没有成功持有(Enter)
-或重入(Reentered)相应的管程，那 return 指令将会抛出 IllegalMonitorStateException 异常。
-这是可能出现的，譬如一个同步 方法只包含了对方法同步对象的 monitorexit 指令，但是未包含配对的 monitorenter 指令。
-
-另外，如果虚拟机实现严格执行了§2.11.10 中规定的结构化锁定规则，但 当前方法调用时，其中的第一条规则被违反的话，return 指令也会抛出 IllegalMonitorStateException 异常。
-
-
+	   运行时异常			||
 						||
 ======================================================================================
 						||
-						||
-						||
 		注意				||
-						||
+ret 指令被用来与 jsr、jsr_w 指令一同实现 Java 语言中的 finally 语句 块(参见§3.13“编译 finally 语句块”)。请注意，jsr_w 指令推送 address 到操作数栈，ret 指令从局部变量表中把它取出，这种不对称的操作是故意设
+计的。
+						||ret 指令不应与 return 指令混为一谈，return 是在没有返回值的方法返回 时使用。
+ret 指令可以与 wide 指令联合使用，以实现使用 2 字节宽度的无符号整数作 为索引来访问局部变量表。
 						||
 						||
 ======================================================================================

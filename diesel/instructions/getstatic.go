@@ -79,7 +79,7 @@ func (s I_getstatic)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_getstatic)Test() *runtime.Context {
+func (s I_getstatic)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},

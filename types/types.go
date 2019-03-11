@@ -1,5 +1,7 @@
 package types
 
+import "sync"
+
 /**
 字符		类型				含义
 B		byte			有符号字节型数
@@ -47,6 +49,35 @@ type Jaddress uint32
 type Jreference struct {
 	ElementType interface{}
 	Reference   interface{}
+	threadId int
+	monitorCount int
+	rwLock sync.RWMutex
+}
+
+func (s *Jreference) MonitorEnter(threadId int) bool {
+	wait:
+	s.rwLock.Lock()
+	if s.threadId != 0 && s.threadId != threadId {
+		s.rwLock.Unlock()
+		goto wait
+	}
+	s.monitorCount++
+	s.threadId = threadId
+	s.rwLock.Unlock()
+	return true
+}
+
+func (s *Jreference) MonitorExit(threadId int) bool {
+	if s.threadId != threadId || s.monitorCount == 0 {
+		return false
+	}
+	s.rwLock.Lock()
+	s.monitorCount--
+	if s.monitorCount == 0 {
+		s.threadId = 0
+	}
+	s.rwLock.Unlock()
+	return true
 }
 
 type Jarray struct {

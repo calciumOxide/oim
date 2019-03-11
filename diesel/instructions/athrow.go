@@ -24,7 +24,7 @@ func (s I_athrow)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_athrow)Test() *runtime.Context {
+func (s I_athrow)Test(octx *runtime.Context) *runtime.Context {
 	f2 := new(runtime.Frame)
 	f2.PushFrame(uint32(2))
 	f2.PushFrame(&types.Jreference{

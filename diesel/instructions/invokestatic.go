@@ -75,7 +75,7 @@ func (s I_invokestatic)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_invokestatic)Test() *runtime.Context {
+func (s I_invokestatic)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(types.Jint(1))
 	f.PushFrame(types.Jdouble(9.123456789012345))

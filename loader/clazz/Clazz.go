@@ -127,6 +127,26 @@ func (s *ClassFile) GetConstantValue(u uint16) interface{} {
 	}
 	return nil
 }
+func (s *ClassFile) GetFiled(name string, flags AccessFlags) *Field {
+
+	if s.Fields != nil && len(s.Fields) > 0 {
+		i := 0
+		for i = 0; i < len(s.Fields); i++ {
+			field := s.Fields[i]
+			n := field.NameIndex
+			f, _ := s.GetConstant(n)
+			if (field.AccessFlags & flags) > 0 && name == f.Info.(*item.Utf8).Str {
+				return field
+			}
+		}
+	}
+	if s.SuperClass != 0 {
+		superClassCp, _ := s.GetConstant(s.SuperClass)
+		superClassNameCp, _ := s.GetConstant(superClassCp.Info.(*item.Class).NameIndex)
+		return GetClass(superClassNameCp.Info.(item.Utf8).Str).GetFiled(name, ACC_PROTECTED | ACC_PUBLIC)
+	}
+	return nil
+}
 
 
 func Decoder(bytes []byte) (*ClassFile, bool) {

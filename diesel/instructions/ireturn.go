@@ -30,12 +30,12 @@ func (s I_ireturn)Stroke(ctx *runtime.Context) error {
 	methodDescCp, _ := ctx.Clazz.GetConstant(ctx.CurrentMethod.DescriptorIndex)
 	returnType := ctx.CurrentMethod.GetReturnType(methodDescCp.Info.(*item.Utf8).Str)
 	ctx.CurrentMethod.CheckReturnType(returnType, value)
-
+	ctx.PopContext()
 	ctx.CurrentFrame.PushFrame(value)
 	return nil
 }
 
-func (s I_ireturn)Test() *runtime.Context {
+func (s I_ireturn)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},

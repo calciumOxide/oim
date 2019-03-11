@@ -33,7 +33,7 @@ func (s I_dload)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_dload)Test() *runtime.Context {
+func (s I_dload)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jchar{1, 2, 3, 4},

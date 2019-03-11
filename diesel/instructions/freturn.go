@@ -34,7 +34,7 @@ func (s I_freturn)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_freturn)Test() *runtime.Context {
+func (s I_freturn)Test(octx *runtime.Context) *runtime.Context {
 	f2 := new(runtime.Frame)
 	f2.PushFrame(uint32(2))
 	f2.PushFrame(types.Jfloat(222))

@@ -23,7 +23,7 @@ func (s I_aloadX)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_aloadX)Test() *runtime.Context {
+func (s I_aloadX)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.Depth = 0
 	a := new(runtime.Aborigines)

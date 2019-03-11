@@ -39,7 +39,7 @@ func (s I_dup2)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_dup2)Test() *runtime.Context {
+func (s I_dup2)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},

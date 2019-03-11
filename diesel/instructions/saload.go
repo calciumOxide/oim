@@ -4,33 +4,46 @@ import (
 	"../runtime"
 	"../../utils"
 	"../../types"
-			)
+	"reflect"
+	"../variator"
+)
 
-type I_swap struct {
+type I_saload struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0x5f] = &I_swap{}
+	INSTRUCTION_MAP[0x35] = &I_saload{}
 }
 
-func (s I_swap)Stroke(ctx *runtime.Context) error {
-	utils.Log(1, "swap exce >>>>>>>>>\n")
+func (s I_saload)Stroke(ctx *runtime.Context) error {
+	utils.Log(1, "saload exce >>>>>>>>>\n")
 
-	value1, _ := ctx.CurrentFrame.PopFrame()
-	value2, _ := ctx.CurrentFrame.PopFrame()
+	index, _ := ctx.CurrentFrame.PopFrame()
+	array, _ := ctx.CurrentFrame.PopFrame()
 
-	//if reflect.TypeOf(value1) != reflect.TypeOf(types.Jlong(0)) || reflect.TypeOf(value2) != reflect.TypeOf(types.Jlong(0)) {
-	//	except, _ := variator.AllocExcept(variator.ClassCastException)
-	//	ctx.Throw(except)
-	//	return nil
-	//}
+	if reflect.TypeOf(index) != reflect.TypeOf(types.Jint(0)) || reflect.TypeOf(array) != reflect.TypeOf(types.Jarray{}) {
+		except, _ := variator.AllocExcept(variator.ClassCastException)
+		ctx.Throw(except)
+		return nil
+	}
 
-	ctx.CurrentFrame.PushFrame(value2)
-	ctx.CurrentFrame.PushFrame(value1)
+	if array.(*types.Jarray).Reference == nil {
+		except, _ := variator.AllocExcept(variator.NullPointerException)
+		ctx.Throw(except)
+		return nil
+	}
+
+	if index.(types.Jint) < 0 || len(array.(*types.Jarray).Reference.([]types.Jbyte)) <= int(index.(types.Jint)) {
+		except, _ := variator.AllocExcept(variator.ArrayIndexOutOfBoundsException)
+		ctx.Throw(except)
+		return nil
+	}
+
+	ctx.CurrentFrame.PushFrame(types.Jint(array.(*types.Jarray).Reference.([]types.Jbyte)[index.(types.Jint)]))
 	return nil
 }
 
-func (s I_swap)Test(octx *runtime.Context) *runtime.Context {
+func (s I_saload)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -47,9 +60,9 @@ func (s I_swap)Test(octx *runtime.Context) *runtime.Context {
 }
 /**
 ======================================================================================
-		操作				||		交换操作数栈顶的两个值
+		操作				||		从数组中加载一个 short 类型数据到操作数栈
 ======================================================================================
-						||		swap
+						||		saload
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
@@ -61,20 +74,24 @@ func (s I_swap)Test(octx *runtime.Context) *runtime.Context {
 						||------------------------------------------------------------
 						||		
 ======================================================================================
-		结构				||		swap = 95(0x5f)
+		结构				||		saload = 53(0x35)
 ======================================================================================
-						||		...，value2，value1  →
+						||		...，arrayref，index  →
 	   操作数栈			||------------------------------------------------------------
-						||		„，value1，value2
+						||		„，value
 ======================================================================================
 						||
-		描述				||		交换操作数栈顶的两个值。
-swap 指令只有在 value1 和 value2 都是(§2.11.1)中定义的分类一的运算类型才能使用。
-Java 虚拟机未提供交换操作数栈中两个分类二数值的指令。
+		描述				||		arrayref 必须是一个 reference 类型的数据，它指向一个组件类型为 int 的数组，index 必须为 int 类型。
+指令执行后，arrayref 和 index 同时从 操作数栈出栈，
+index 作为索引定位到数组中的 short 类型值先被零位扩展 (Zero-Extended)为一个 int 类型数据 value，然后再将 value 压入到
+操作数栈中。
 						||
 ======================================================================================
 						||		
 	   运行时异常			||
+						||如果 arrayref 为 null，saload 指令将抛出 NullPointerException 异 常
+						||另外，如果 index 不在 arrayref 所代表的数组上下界范围中，saload 指 令将抛出 ArrayIndexOutOfBoundsException 异常。
+						||
 						||
 ======================================================================================
 						||

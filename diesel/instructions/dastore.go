@@ -35,7 +35,7 @@ func (s I_dastore)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_dastore)Test() *runtime.Context {
+func (s I_dastore)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []interface{}{1.11, 2.22, 3.33, 4.44},

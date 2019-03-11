@@ -42,7 +42,7 @@ func (s I_if_icmpX)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_if_icmpX)Test() *runtime.Context {
+func (s I_if_icmpX)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},

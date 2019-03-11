@@ -26,7 +26,7 @@ func (s I_areturn)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_areturn)Test() *runtime.Context {
+func (s I_areturn)Test(octx *runtime.Context) *runtime.Context {
 	f2 := new(runtime.Frame)
 	f2.PushFrame(uint32(2))
 	f2.PushFrame(uint32(999))

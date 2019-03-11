@@ -22,6 +22,7 @@ const (
 	AbstractMethodError
 	IncompatibleClassChangeError
 	MethodParamsNoMatchExcept
+	IllegalMonitorStateException
 	InstructionException
 )
 func except()(*types.Jreference, error){
@@ -32,6 +33,7 @@ func init() {
 	EXCEPT_MAP[AbstractMethodError] = except
 	EXCEPT_MAP[IncompatibleClassChangeError] = except
 	EXCEPT_MAP[MethodParamsNoMatchExcept] = except
+	EXCEPT_MAP[IllegalMonitorStateException] = except
 
 
 	EXCEPT_MAP[NullPointerException] = func()(*types.Jreference, error) {

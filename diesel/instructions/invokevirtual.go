@@ -107,23 +107,23 @@ func (s I_invokevirtual)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_invokevirtual)Test() *runtime.Context {
+func (s I_invokevirtual)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jreference{
 		Reference: types.Jobject{},
 		ElementType: clazz.CLASS_MAP["com/oxide/A"],
 	})
 	f.PushFrame(types.Jint(1))
-	f.PushFrame(types.Jdouble(9.123456789012345))
-	f.PushFrame(types.Jfloat(9.123456789012345))
-	f.PushFrame(&types.Jreference{
-		Reference: types.Jobject{},
-		ElementType: clazz.CLASS_MAP["com/oxide/A"],
-	})
+	//f.PushFrame(types.Jdouble(9.123456789012345))
+	//f.PushFrame(types.Jfloat(9.123456789012345))
+	//f.PushFrame(&types.Jreference{
+	//	Reference: types.Jobject{},
+	//	ElementType: clazz.CLASS_MAP["com/oxide/A"],
+	//})
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x0, 13, 0x1, 0x0},
+		Code: []byte{0x0, 0x0, 14, 0x1, 0x0},
 		//Code: []byte{0x0, 0x0, 0x1, 0x1, 0x0},
 		CurrentFrame: f,
 		CurrentAborigines: a,

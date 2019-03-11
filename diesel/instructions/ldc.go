@@ -24,7 +24,7 @@ func (s I_ldc)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_ldc)Test() *runtime.Context {
+func (s I_ldc)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		ElementJype: reflect.TypeOf(types.Jlong(0)),

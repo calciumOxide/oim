@@ -26,7 +26,7 @@ func (s I_astoreX)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_astoreX)Test() *runtime.Context {
+func (s I_astoreX)Test(octx *runtime.Context) *runtime.Context {
 
 	f1 := new(runtime.Frame)
 	f1.PushFrame(9999)

@@ -8,15 +8,25 @@ import (
 	"../variator"
 	)
 
-type I_monitorexit struct {
+type I_multianewarray struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0xc2] = &I_monitorexit{}
+	INSTRUCTION_MAP[0xc2] = &I_multianewarray{}
 }
 
-func (s I_monitorexit)Stroke(ctx *runtime.Context) error {
-	utils.Log(1, "monitorexit exce >>>>>>>>>\n")
+func (s I_multianewarray)Stroke(ctx *runtime.Context) error {
+	utils.Log(1, "multianewarray exce >>>>>>>>>\n")
+
+	index := utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC+2])
+	dimes := ctx.Code[ctx.PC+2]
+	typeCp, _ := ctx.Clazz.GetConstant(index)
+	sizeArray := make([]types.Jint, dimes)
+
+	for i := uint8(0); i < dimes; i++ {
+		size, _ := ctx.CurrentFrame.PopFrame()
+		sizeArray = append(sizeArray, size.(types.Jint))
+	}
 
 	obj, _ := ctx.CurrentFrame.PopFrame()
 
@@ -32,7 +42,7 @@ func (s I_monitorexit)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 
-	if !obj.(*types.Jreference).MonitorExit(ctx.ThreadId) {
+	if !obj.(*types.Jreference).multianewarray(ctx.ThreadId) {
 		except, _ := variator.AllocExcept(variator.IllegalMonitorStateException)
 		ctx.Throw(except)
 		return nil
@@ -41,7 +51,7 @@ func (s I_monitorexit)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_monitorexit)Test(octx *runtime.Context) *runtime.Context {
+func (s I_multianewarray)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -58,52 +68,55 @@ func (s I_monitorexit)Test(octx *runtime.Context) *runtime.Context {
 }
 /**
 ======================================================================================
-		操作				||		退出一个对象的 monitor
+		操作				||		创建一个新的多维数组
 ======================================================================================
-						||		monitorexit
+						||		multianewarray
 						||------------------------------------------------------------
-						||
+						||		indexbyte1
 						||------------------------------------------------------------
-						||		
+						||		indexbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||		dimensions
 						||------------------------------------------------------------
 						||		
 						||------------------------------------------------------------
 						||		
 ======================================================================================
-		结构				||		monitorexit = 195(0xc3)
+		结构				||		multianewarray = 197(0xc5)
 ======================================================================================
-						||		...，objectref →
+						||		...，count1，[count2，...]  →
 	   操作数栈			||------------------------------------------------------------
-						||		„，
+						||		„，arrayref
 ======================================================================================
 						||
-		描述				||		objectref 必须为 reference 类型数据。
+		描述				||		dimensions 操作数是一个无符号 byte 类型数据，它必须大于或等于 1，代 表创建数组的维度值。相应地，操作数栈中必须包含 dimensions 个数值，
+数组每一个值代表每个维度中需要创建的元素数量。这些值必须为非负数 int 类型数据。count1 描述第一个维度的长度，count2 描述第二个维度的长度， 依此类推。
 
-执行 monitorexit 指令的线程必须是 objectref 对应的 monitor 的所有者。
+指令执行时，所有 count 都将从操作数栈中出栈，无符号数 indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6)的运行时常量池的索引值，
+构建 方式为(indexbyte1 << 8)| indexbyte2，该索引所指向的运行时常量 池项应当是一个类、接口或者数组类型的符号引用，
+这个类、接口或者数组类 型应当是已被解析(§5.4.3.1)的。指令执行产生的结果将会是一个维度不 小于 dimensions 的数组。
 
-指令执行时，线程把 monitor 的进入计数器值减 1，如果减 1 后计数器值为 0，
-那线程退出 monitor，不再是这个 monitor 的拥有者。其他被这个 monitor 阻塞的线程可以尝试去获取这个 monitor 的所有权。
+一个新的多维数组将会被分配在 GC 堆中，如果任何一个 count 值为 0，那就 不会分配维度。
+数组第一维的元素被初始化为第二维的子数组，后面每一维都 依此类推。
+数组的最后一个维度的元素将会被分配为数组元素类型的初始值 (§2.3，§2.4)。并且一个代表该数组的 reference 类型数据 arrayref 压入到操作数栈中。
 
 						||
 ======================================================================================
 						||		
+	   链接时异常			||
+						||	在类、接口或者数组的符号解析阶段，任何在§5.4.3.1 章节中描述的异常 都可能被抛出。
+另外，如果当前类没有权限访问数组的元素类型，multianewarray 指令将 会抛出 IllegalAccessError 异常。
+						||
+======================================================================================
+						||
 	   运行时异常			||
-						||	当 objectref 为 null 时，monitorexit 指令将抛出 NullPointerException 异常。
-另外，如果执行 monitorexit 的线程原本并没有这个 monitor 的所有权， 那 monitorexit 指令将抛出 IllegalMonitorStateException.异常。
-另外，如果 Java 虚拟机执行 monitorexit 时发现违反了§2.11.10 中第 二条规则，那 monitorexit 指令将抛出 IllegalMonitorStateException.异常。
+						||	另外，如果 dimensions 值小于 0 的话，multianewarray 指令将会抛出一 个 NegativeArraySizeException 异常。
 						||
 ======================================================================================
 						||
 		注意				||
-						||一个 monitorenter 指令可能会与一个或多个 monitorexit 指令配合实现 Java 语言中 synchronized 同步语句块的语义(§3.14)。
-但monitorexit 和 monitorexit 指令不会用来实现 synchronized 方法的 语义，尽管它们确实可以实现类似的语义。
-
-Java 虚拟机对在 synchronized 方法和 synchronized 同步语句块中抛出的异常有不同的处理方式:
-在 synchronized 方法正常完成时，monitor 通过 Java 虚拟机的返回指令 退出。在 synchronized 方法非正常完成时，monitor 通过 Java 虚拟机的 athrow 指令退出。
-当有异常从 synchronized 同步语句块抛出，将由 Java 虚拟机异常处理机 制(§3.14)来保证退出了之前在 synchronized 同步语句块开始时进入的 monitor。
-
+						||对于一维数组来说，使用 newarray 或者 anewarray 指令创建会更加高效。
+在运行时常量池中确定的数组类型维度可能比操作数栈中 dimensions 所代 表的维度更高，在这种情况下，multianewarray 指令只会创建数组的第一 个维度。
 						||
 						||
 ======================================================================================

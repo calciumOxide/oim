@@ -25,7 +25,7 @@ func (s I_arraylength)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_arraylength)Test() *runtime.Context {
+func (s I_arraylength)Test(octx *runtime.Context) *runtime.Context {
 
 	var a []interface{}
 	a = append(append(append(a, 1), 2), 4)

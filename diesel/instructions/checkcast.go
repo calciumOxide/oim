@@ -40,7 +40,7 @@ func (s I_checkcast)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_checkcast)Test() *runtime.Context {
+func (s I_checkcast)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jreference{
 		Reference: &types.Jobject{

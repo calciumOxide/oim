@@ -27,7 +27,7 @@ func (s I_aastore)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_aastore)Test() *runtime.Context {
+func (s I_aastore)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.Depth = 3
 	f.Layers = append(f.Layers, uint32(0))

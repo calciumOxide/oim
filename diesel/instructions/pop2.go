@@ -6,20 +6,27 @@ import (
 	"../../types"
 		)
 
-type I_pop struct {
+type I_pop2 struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0x57] = &I_pop{}
+	INSTRUCTION_MAP[0x58] = &I_pop2{}
 }
 
-func (s I_pop)Stroke(ctx *runtime.Context) error {
-	utils.Log(1, "pop exce >>>>>>>>>\n")
-	ctx.CurrentFrame.PopFrame()
+func (s I_pop2)Stroke(ctx *runtime.Context) error {
+	utils.Log(1, "pop2 exce >>>>>>>>>\n")
+	value, _ := ctx.CurrentFrame.PopFrame()
+	if !runtime.IsDoubleLong(value) {
+		value2, _ := ctx.CurrentFrame.PeekFrame()
+		if runtime.IsDoubleLong(value2) {
+			panic("pop2 value2 is double>>>>>>>>>>>>>>>>>>>>>>>")
+		}
+		ctx.CurrentFrame.PopFrame()
+	}
 	return nil
 }
 
-func (s I_pop)Test(octx *runtime.Context) *runtime.Context {
+func (s I_pop2)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -36,9 +43,9 @@ func (s I_pop)Test(octx *runtime.Context) *runtime.Context {
 }
 /**
 ======================================================================================
-		操作				||		将操作数栈的栈顶元素出栈
+		操作				||		将操作数栈的栈顶一个或两个元素出栈
 ======================================================================================
-						||		pop
+						||		pop2
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
@@ -50,15 +57,18 @@ func (s I_pop)Test(octx *runtime.Context) *runtime.Context {
 						||------------------------------------------------------------
 						||		
 ======================================================================================
-		结构				||		pop = 87(0x57)
+		结构				||		pop2 = 88(0x58)
+======================================================================================
+						||		...，value2，value1 →
+	   操作数栈			||-----------------------------这时候 value1 和 value2 都必须为(§2.11.1)中定义的分类一的运算类 型。
+						||		...，
 ======================================================================================
 						||		...，value →
-	   操作数栈			||------------------------------------------------------------
+	   操作数栈			||-----------------------------这时候 value 必须为(§2.11.1)中定义的分类二的运算类型。
 						||		...，
 ======================================================================================
 						||
-		描述				||		将操作数栈的栈顶元素出栈。
-pop 指令只能用来操作(§2.11.1)中定义的分类一的运算类型。
+		描述				||		将操作数栈的栈顶一个或两个元素出栈。
 						||
 ======================================================================================
 						||		

@@ -46,7 +46,7 @@ func (s I_iastore)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_iastore)Test() *runtime.Context {
+func (s I_iastore)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		ElementJype: reflect.TypeOf(types.Jint(0)),

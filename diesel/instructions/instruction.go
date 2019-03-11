@@ -2,7 +2,6 @@ package instructions
 
 import "../runtime"
 import "../../utils"
-import "../../loader/clazz"
 
 var INSTRUCTION_MAP = make(map[Instructions]Storker)
 
@@ -10,13 +9,11 @@ type Instructions uint8
 
 type Storker interface {
 	Stroke(ctx *runtime.Context) error
-	Test() *runtime.Context
+	Test(octx *runtime.Context) *runtime.Context
 }
 
 func (s Instructions)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "%x \n", s)
-	ctx = INSTRUCTION_MAP[s].Test()
-	ctx.Clazz = clazz.GetClass("com/oxide/A")
 	ctx.PC += 1
 	INSTRUCTION_MAP[s].Stroke(ctx)
 	ctx.Handle()

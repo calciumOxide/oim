@@ -18,8 +18,11 @@ type Context struct {
 	CurrentMethod     *clazz.Method
 	MethodStack       []*clazz.Method
 	Opoos             bool
-	Clazz *clazz.ClassFile
-	ClazzStack []*clazz.ClassFile
+	Clazz             *clazz.ClassFile
+	ClazzStack        []*clazz.ClassFile
+	ThreadId          int
+
+	wide bool
 }
 
 type Frame struct {
@@ -137,6 +140,16 @@ func (s *Context)Handle() error {
 	}
 	s.PopContext()
 	return nil
+}
+
+func (s *Context) Wide() {
+	s.wide = true
+}
+
+func (s *Context) IsWide() bool {
+	b := s.wide
+	s.wide = false
+	return b
 }
 
 func IsCatched(r *types.Jreference, et *attribute.ExceptTable) bool {

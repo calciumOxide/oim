@@ -31,7 +31,7 @@ func (s I_ishr)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_ishr)Test() *runtime.Context {
+func (s I_ishr)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},

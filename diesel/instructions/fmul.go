@@ -63,7 +63,7 @@ func (s I_fmul)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_fmul)Test() *runtime.Context {
+func (s I_fmul)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},

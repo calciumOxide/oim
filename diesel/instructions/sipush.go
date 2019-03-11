@@ -6,31 +6,24 @@ import (
 	"../../types"
 			)
 
-type I_swap struct {
+type I_sipush struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0x5f] = &I_swap{}
+	INSTRUCTION_MAP[0x11] = &I_sipush{}
 }
 
-func (s I_swap)Stroke(ctx *runtime.Context) error {
-	utils.Log(1, "swap exce >>>>>>>>>\n")
+func (s I_sipush)Stroke(ctx *runtime.Context) error {
+	utils.Log(1, "sipush exce >>>>>>>>>\n")
 
-	value1, _ := ctx.CurrentFrame.PopFrame()
-	value2, _ := ctx.CurrentFrame.PopFrame()
+	value := types.Jint(ctx.Code[ctx.PC]) << 8 | types.Jint(ctx.Code[ctx.PC + 1])
+	ctx.PC += 2
 
-	//if reflect.TypeOf(value1) != reflect.TypeOf(types.Jlong(0)) || reflect.TypeOf(value2) != reflect.TypeOf(types.Jlong(0)) {
-	//	except, _ := variator.AllocExcept(variator.ClassCastException)
-	//	ctx.Throw(except)
-	//	return nil
-	//}
-
-	ctx.CurrentFrame.PushFrame(value2)
-	ctx.CurrentFrame.PushFrame(value1)
+	ctx.CurrentFrame.PushFrame(value)
 	return nil
 }
 
-func (s I_swap)Test(octx *runtime.Context) *runtime.Context {
+func (s I_sipush)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -47,13 +40,13 @@ func (s I_swap)Test(octx *runtime.Context) *runtime.Context {
 }
 /**
 ======================================================================================
-		操作				||		交换操作数栈顶的两个值
+		操作				||		将一个 short 类型数据入栈
 ======================================================================================
-						||		swap
+						||		sipush
 						||------------------------------------------------------------
-						||
+						||		byte1
 						||------------------------------------------------------------
-						||		
+						||		byte2
 		格式				||------------------------------------------------------------
 						||		
 						||------------------------------------------------------------
@@ -61,16 +54,15 @@ func (s I_swap)Test(octx *runtime.Context) *runtime.Context {
 						||------------------------------------------------------------
 						||		
 ======================================================================================
-		结构				||		swap = 95(0x5f)
+		结构				||		sipush = 17(0x11)
 ======================================================================================
-						||		...，value2，value1  →
+						||		...，  →
 	   操作数栈			||------------------------------------------------------------
-						||		„，value1，value2
+						||		„，value
 ======================================================================================
 						||
-		描述				||		交换操作数栈顶的两个值。
-swap 指令只有在 value1 和 value2 都是(§2.11.1)中定义的分类一的运算类型才能使用。
-Java 虚拟机未提供交换操作数栈中两个分类二数值的指令。
+		描述				||		无符号数byte1和byte2通过(byte1 << 8)| byte2方式构造成一个 short 类型数值，
+然后此数值带符号扩展为一个 int 类型的值 value，然后将 value 压入到操作数栈中。
 						||
 ======================================================================================
 						||		

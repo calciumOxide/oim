@@ -4,33 +4,22 @@ import (
 	"../runtime"
 	"../../utils"
 	"../../types"
-	"reflect"
-	"../variator"
-)
+		)
 
-type I_ineg struct {
+type I_nop struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0x74] = &I_ineg{}
+	INSTRUCTION_MAP[0x00] = &I_nop{}
 }
 
-func (s I_ineg)Stroke(ctx *runtime.Context) error {
-	utils.Log(1, "ineg exce >>>>>>>>>\n")
+func (s I_nop)Stroke(ctx *runtime.Context) error {
+	utils.Log(1, "nop exce >>>>>>>>>\n")
 
-	value, _ := ctx.CurrentFrame.PopFrame()
-
-	if reflect.TypeOf(value) != reflect.TypeOf(types.Jint(0)) {
-		except, _ := variator.AllocExcept(variator.ClassCastException)
-		ctx.Throw(except)
-		return nil
-	}
-
-	ctx.CurrentFrame.PushFrame(types.Jint(value.(types.Jint) * -1))
 	return nil
 }
 
-func (s I_ineg)Test(octx *runtime.Context) *runtime.Context {
+func (s I_nop)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -47,9 +36,9 @@ func (s I_ineg)Test(octx *runtime.Context) *runtime.Context {
 }
 /**
 ======================================================================================
-		操作				||		int 类型数据取负运算
+		操作				||		什么事情都不做
 ======================================================================================
-						||		ineg
+						||		nop
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
@@ -61,18 +50,14 @@ func (s I_ineg)Test(octx *runtime.Context) *runtime.Context {
 						||------------------------------------------------------------
 						||		
 ======================================================================================
-		结构				||		ineg = 116(0x74)
+		结构				||		nop = 0(0x0)
 ======================================================================================
-						||		...，value →
-	   操作数栈			||------------------------------------------------------------
-						||		...，result
+						||		...， →
+	   操作数栈			||--------------------无变化-----------------------------------
+						||		...，
 ======================================================================================
-						||		
-						||		value 必须为 int 类型数据，指令执行时，value 从操作数栈中出栈，接着 对这个数进行算术取负运算，运算结果-value 被压入到操作数栈中。
 						||
-		描述				||		对于 int 类型数据，取负运算等同于与零做减法运算。因为 Java 虚拟机使用 二进制补码来表示整数，而且二进制补码值的范围并不是完全对称的，int 类 型中绝对值最大的负数取反的结果也依然是它本身。
-						||		尽管指令执行过程中可能 发生上限溢出，但是不会抛出任何异常。
-						||		对于所有的 int 类型值 x 来说，-x 等于(~x)+1
+		描述				||		什么事情都不做
 						||
 ======================================================================================
 						||		

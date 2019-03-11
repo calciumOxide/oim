@@ -4,34 +4,33 @@ import (
 	"../runtime"
 	"../../utils"
 	"../../types"
-	"reflect"
-	"../variator"
-	)
+			)
 
-type I_lxor struct {
+type I_swap struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0x83] = &I_lxor{}
+	INSTRUCTION_MAP[0x5f] = &I_swap{}
 }
 
-func (s I_lxor)Stroke(ctx *runtime.Context) error {
-	utils.Log(1, "lxor exce >>>>>>>>>\n")
+func (s I_swap)Stroke(ctx *runtime.Context) error {
+	utils.Log(1, "swap exce >>>>>>>>>\n")
 
 	value1, _ := ctx.CurrentFrame.PopFrame()
 	value2, _ := ctx.CurrentFrame.PopFrame()
 
-	if reflect.TypeOf(value1) != reflect.TypeOf(types.Jlong(0)) || reflect.TypeOf(value2) != reflect.TypeOf(types.Jlong(0)) {
-		except, _ := variator.AllocExcept(variator.ClassCastException)
-		ctx.Throw(except)
-		return nil
-	}
+	//if reflect.TypeOf(value1) != reflect.TypeOf(types.Jlong(0)) || reflect.TypeOf(value2) != reflect.TypeOf(types.Jlong(0)) {
+	//	except, _ := variator.AllocExcept(variator.ClassCastException)
+	//	ctx.Throw(except)
+	//	return nil
+	//}
 
-	ctx.CurrentFrame.PushFrame(types.Jlong(value1.(types.Jlong) ^ value2.(types.Jlong)))
+	ctx.CurrentFrame.PushFrame(value2)
+	ctx.CurrentFrame.PushFrame(value1)
 	return nil
 }
 
-func (s I_lxor)Test(octx *runtime.Context) *runtime.Context {
+func (s I_swap)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -48,9 +47,9 @@ func (s I_lxor)Test(octx *runtime.Context) *runtime.Context {
 }
 /**
 ======================================================================================
-		操作				||		long 数值异或运算
+		操作				||		交换操作数栈顶的两个值
 ======================================================================================
-						||		lxor
+						||		swap
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
@@ -62,15 +61,16 @@ func (s I_lxor)Test(octx *runtime.Context) *runtime.Context {
 						||------------------------------------------------------------
 						||		
 ======================================================================================
-		结构				||		lxor = 131(0x83)
+		结构				||		swap = 95(0x5f)
 ======================================================================================
-						||		...，value1，value2 →
+						||		...，value2，value1  →
 	   操作数栈			||------------------------------------------------------------
-						||		„，result
+						||		„，value1，value2
 ======================================================================================
 						||
-		描述				||		value1 和 value2 都必须为 long 类型数据，指令执行时，value1 和 value2 从操作数栈中出栈，然后将 value1 和 value2 进行按位异或运算，并把运算
-结果入栈回操作数栈中。
+		描述				||		交换操作数栈顶的两个值。
+swap 指令只有在 value1 和 value2 都是(§2.11.1)中定义的分类一的运算类型才能使用。
+Java 虚拟机未提供交换操作数栈中两个分类二数值的指令。
 						||
 ======================================================================================
 						||		

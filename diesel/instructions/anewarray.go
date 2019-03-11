@@ -32,7 +32,7 @@ func (s I_anewarray)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_anewarray)Test() *runtime.Context {
+func (s I_anewarray)Test(octx *runtime.Context) *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(uint32(4))
 	a := new(runtime.Aborigines)
