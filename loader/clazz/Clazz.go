@@ -25,6 +25,7 @@ type ClassFile struct {
 	Methods []*Method //方法表，methods[]数组中的每个成员都必须是一个 method_info 结构
 	AttributesCount uint16
 	Attributes []*Attribute //属性表，attributes 表的每个项的值必须是 attribute_info 结构
+	ClassInit bool
 }
 
 func AllocClassFile() *ClassFile {
@@ -49,6 +50,7 @@ func GetClass(className string) *ClassFile {
 	bytes, _ := rope.ReadClass(path + className + ".class")
 	cf, _ = Decoder(bytes)
 	CLASS_MAP[className] = cf
+	//cf.Cinit()
 	return cf
 }
 

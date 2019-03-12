@@ -4,15 +4,16 @@ import (
 	"../runtime"
 	"../../utils"
 	"../../types"
-	"reflect"
-	"../variator"
+			"../../loader/clazz"
+	"../../loader/clazz/item"
+	"../oli"
 	)
 
 type I_multianewarray struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0xc2] = &I_multianewarray{}
+	INSTRUCTION_MAP[0xc5] = &I_multianewarray{}
 }
 
 func (s I_multianewarray)Stroke(ctx *runtime.Context) error {
@@ -20,34 +21,23 @@ func (s I_multianewarray)Stroke(ctx *runtime.Context) error {
 
 	index := utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC+2])
 	dimes := ctx.Code[ctx.PC+2]
+	ctx.PC += 3
 	typeCp, _ := ctx.Clazz.GetConstant(index)
+	var et interface{}
+	if typeCp.Tag == clazz.CLASS {
+		et, _ = ctx.Clazz.GetConstant(typeCp.Info.(*item.Class).NameIndex)
+	}
+
 	sizeArray := make([]types.Jint, dimes)
 
+	sumSize := types.Jint(0)
 	for i := uint8(0); i < dimes; i++ {
 		size, _ := ctx.CurrentFrame.PopFrame()
 		sizeArray = append(sizeArray, size.(types.Jint))
+		sumSize += size.(types.Jint)
 	}
-
-	obj, _ := ctx.CurrentFrame.PopFrame()
-
-	if reflect.TypeOf(obj) != reflect.TypeOf(types.Jreference{}) {
-		except, _ := variator.AllocExcept(variator.ClassCastException)
-		ctx.Throw(except)
-		return nil
-	}
-
-	if obj.(*types.Jreference).Reference == nil {
-		except, _ := variator.AllocExcept(variator.NullPointerException)
-		ctx.Throw(except)
-		return nil
-	}
-
-	if !obj.(*types.Jreference).multianewarray(ctx.ThreadId) {
-		except, _ := variator.AllocExcept(variator.IllegalMonitorStateException)
-		ctx.Throw(except)
-		return nil
-	}
-
+	jarray := oli.AllocJarray(sumSize, et, uint32(dimes), sizeArray)
+	ctx.CurrentFrame.PushFrame(jarray)
 	return nil
 }
 

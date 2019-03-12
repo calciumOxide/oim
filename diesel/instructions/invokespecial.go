@@ -56,6 +56,10 @@ func (s I_invokespecial)Stroke(ctx *runtime.Context) error {
 		superClassCp, _ := ctx.Clazz.GetConstant(objectClass.SuperClass)
 		superClassName, _ := ctx.Clazz.GetConstant(superClassCp.Info.(*item.Class).NameIndex)
 		superClass := clazz.GetClass(superClassName.Info.(*item.Utf8).Str)
+		if !ctx.Cinit(superClass) {
+			return nil
+		}
+
 		method = superClass.GetMethod(nameCp.Info.(*item.Utf8).Str, descCp.Info.(*item.Utf8).Str)
 		if method.IsPrivate() {
 			except, _ := variator.AllocExcept(variator.AbstractMethodError)
@@ -81,7 +85,7 @@ func (s I_invokespecial)Stroke(ctx *runtime.Context) error {
 		top, _ := ctx.CurrentFrame.PopFrame()
 		args = append(args, top)
 	}
-	ctx.InvokeMethod(method, args)
+	ctx.InvokeMethod(objectClass, method, args)
 	return nil
 }
 

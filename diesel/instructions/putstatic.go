@@ -64,6 +64,10 @@ func (s I_putstatic)Stroke(ctx *runtime.Context) error {
 	}
 
 	cla := clazz.GetClass(cname.Info.(*item.Utf8).Str)
+	if !ctx.Cinit(cla) {
+		return nil
+	}
+
 	field := cla.GetFiled(fname.Info.(*item.Utf8).Str, clazz.ACC_PRIVATE|clazz.ACC_PROTECTED|clazz.ACC_PUBLIC)
 	field.Value = value
 

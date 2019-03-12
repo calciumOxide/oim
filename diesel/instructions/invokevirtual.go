@@ -27,6 +27,9 @@ func (s I_invokevirtual)Stroke(ctx *runtime.Context) error {
 	classCp, _ := ctx.Clazz.GetConstant(methodInterface.Info.(*item.MethodRef).ClassIndex)
 	classNameCp, _ := ctx.Clazz.GetConstant(classCp.Info.(*item.Class).NameIndex)
 	class := clazz.GetClass(classNameCp.Info.(*item.Utf8).Str)
+	if !ctx.Cinit(class) {
+		return nil
+	}
 
 	andType, _ := ctx.Clazz.GetConstant(methodInterface.Info.(*item.MethodRef).NameAndTypeIndex)
 	nameCp, _ := ctx.Clazz.GetConstant(andType.Info.(*item.NameAndType).NameIndex)
@@ -103,7 +106,7 @@ func (s I_invokevirtual)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 	args = append(args, object)
-	ctx.InvokeMethod(method, args)
+	ctx.InvokeMethod(class, method, args)
 	return nil
 }
 

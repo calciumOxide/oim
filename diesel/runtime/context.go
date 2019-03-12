@@ -5,6 +5,7 @@ import "../../loader/clazz"
 import (
 	"../../loader/clazz/attribute"
 	"reflect"
+	"../variator"
 )
 
 type Context struct {
@@ -40,11 +41,28 @@ type Aborigines struct {
 //	Value interface{}
 //}
 
-func (ctx *Context)InvokeMethod(method *clazz.Method, args []interface{}) *Context {
+
+func (s *Context) Cinit(cf *clazz.ClassFile) bool {
+	if !cf.ClassInit {
+		clinit := cf.GetMethod("<clinit>", "()V")
+		if clinit == nil {
+			except, _ := variator.AllocExcept(variator.ClassNotFindException)
+			s.Throw(except)
+			return false
+		}
+		s.InvokeMethod(cf, clinit, nil)
+		cf.ClassInit = true
+		return true
+	}
+	return true
+}
+
+func (ctx *Context)InvokeMethod(class *clazz.ClassFile, method *clazz.Method, args []interface{}) *Context {
 	a, _ := method.GetAttribute(clazz.CODE_ATTR)
 	codes := a.AttributeItem.(*attribute.Codes)
 	callee := &Context{
 		PC: 0,
+		Clazz: class,
 		CurrentFrame: &Frame{
 			//Layers: make([]interface{}, codes.MaxStack),
 			Layers: []interface{}{},
@@ -84,6 +102,9 @@ func (s *Context)PushContext(ctx *Context) error {
 	s.CodeStack = append(s.CodeStack, s.Code)
 	s.Code = ctx.Code
 
+	s.ClazzStack = append(s.ClazzStack, s.Clazz)
+	s.Clazz = ctx.Clazz
+
 	return nil
 }
 
@@ -109,6 +130,8 @@ func (s *Context)PopContext() (*Context, error) {
 	s.CurrentMethod = s.MethodStack[len(s.MethodStack) - 1]
 	s.MethodStack = s.MethodStack[:len(s.MethodStack) - 1]
 
+	s.Clazz = s.ClazzStack[len(s.ClazzStack)]
+	s.ClazzStack = s.ClazzStack[:len(s.ClazzStack) - 1]
 	return s, nil
 }
 

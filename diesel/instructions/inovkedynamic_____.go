@@ -6,17 +6,45 @@ import (
 	"../../types"
 	"reflect"
 	"../variator"
+	"../../loader/clazz/item"
 )
 
 type I_inovkedynamic struct {
 }
 
 func init()  {
-	INSTRUCTION_MAP[0x74] = &I_inovkedynamic{}
+	INSTRUCTION_MAP[0xba] = &I_inovkedynamic{}
 }
 
 func (s I_inovkedynamic)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "inovkedynamic exce >>>>>>>>>\n")
+
+	index := utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC+2])
+	ctx.PC += 2
+
+	mrCp, _ := ctx.Clazz.GetConstant(index)
+	kind := mrCp.Info.(*item.MethodHandle).ReferenceKind
+
+	switch kind {
+		case item.GET_FIELD:
+		break
+		case item.GET_STATIC:
+		break
+		case item.PUT_FIELD:
+		break
+		case item.PUT_STATIC:
+		break
+		case item.INVOKE_VIRTUAL:
+		break
+		case item.INVOKE_STATIC:
+		break
+		case item.INVOKE_SPECIAL:
+		break
+		case item.NEW_INVOKE_SPECIAL:
+		break
+		case item.INVOKE_INTERFACE:
+		break
+	}
 
 	value, _ := ctx.CurrentFrame.PopFrame()
 

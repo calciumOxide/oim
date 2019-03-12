@@ -62,6 +62,9 @@ func (s I_getstatic)Stroke(ctx *runtime.Context) error {
 	}
 
 	cla := clazz.GetClass(cname.Info.(*item.Utf8).Str)
+	if !ctx.Cinit(cla) {
+		return nil
+	}
 	if cla.Fields != nil && len(cla.Fields) > 0 {
 		i := 0
 		for i = 0; i < len(cla.Fields); i++ {

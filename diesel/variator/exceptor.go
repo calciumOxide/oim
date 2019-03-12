@@ -23,6 +23,7 @@ const (
 	IncompatibleClassChangeError
 	MethodParamsNoMatchExcept
 	IllegalMonitorStateException
+	NegativeArraySizeException
 	InstructionException
 )
 func except()(*types.Jreference, error){
@@ -34,6 +35,7 @@ func init() {
 	EXCEPT_MAP[IncompatibleClassChangeError] = except
 	EXCEPT_MAP[MethodParamsNoMatchExcept] = except
 	EXCEPT_MAP[IllegalMonitorStateException] = except
+	EXCEPT_MAP[NegativeArraySizeException] = except
 
 
 	EXCEPT_MAP[NullPointerException] = func()(*types.Jreference, error) {

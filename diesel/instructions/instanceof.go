@@ -38,7 +38,10 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 	}
 	name, _ := ctx.Clazz.GetConstant(cp.Info.(*item.Class).NameIndex)
 	typeClass := clazz.GetClass(name.Info.(*item.Utf8).Str)
-	
+	if !ctx.Cinit(typeClass) {
+		return nil
+	}
+
 	o := &types.Jreference{}
 	if reflect.TypeOf(obj) == reflect.TypeOf(&types.Jarray{}) {
 		o.ElementType = obj.(*types.Jarray).ElementJype
@@ -51,6 +54,10 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 				cn, _ := typeClass.GetConstant(typeClass.ThisClass)
 				tn, _ := o.ElementType.(*clazz.ClassFile).GetConstant(o.ElementType.(*clazz.ClassFile).ThisClass)
 				sc := clazz.GetClass(tn.Info.(*item.Utf8).Str)
+				if !ctx.Cinit(sc) {
+					return nil
+				}
+
 				for ; ; {
 					if cn.Info.(*item.Utf8).Str == tn.Info.(*item.Utf8).Str {
 						ctx.CurrentFrame.PushFrame(types.Jint(1))
@@ -62,6 +69,9 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 					tn, _ = sc.GetConstant(sc.ThisClass)
 					sn, _ := sc.GetConstant(sc.SuperClass)
 					sc = clazz.GetClass(sn.Info.(*item.Utf8).Str)
+					if !ctx.Cinit(sc) {
+						return nil
+					}
 				}
 			} else {
 				if typeClass.SuperClass == 0 {
@@ -81,6 +91,10 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 							return nil
 						}
 						inf := clazz.GetClass(in.Info.(*item.Utf8).Str)
+						if !ctx.Cinit(inf) {
+							return nil
+						}
+
 						for ; ; {
 							if inf != nil && inf.SuperClass != 0 {
 								in, _ = inf.GetConstant(inf.ThisClass)
@@ -90,6 +104,10 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 								}
 								super, _ := inf.GetConstant(inf.SuperClass)
 								inf = clazz.GetClass(super.Info.(*item.Utf8).Str)
+								if !ctx.Cinit(inf) {
+									return nil
+								}
+
 							}
 
 						}
@@ -99,11 +117,19 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 					}
 					sn, _ := o.ElementType.(*clazz.ClassFile).GetConstant(o.ElementType.(*clazz.ClassFile).SuperClass)
 					is = clazz.GetClass(sn.Info.(*item.Utf8).Str).Interfaces
+					if !ctx.Cinit(is) {
+						return nil
+					}
+
 				}
 			} else {
 				cn, _ := typeClass.GetConstant(typeClass.ThisClass)
 				tn, _ := o.ElementType.(*clazz.ClassFile).GetConstant(o.ElementType.(*clazz.ClassFile).ThisClass)
 				sc := clazz.GetClass(tn.Info.(*item.Utf8).Str)
+				if !ctx.Cinit(sc) {
+					return nil
+				}
+
 				for ; ; {
 					if cn.Info.(*item.Utf8).Str == tn.Info.(*item.Utf8).Str {
 						ctx.CurrentFrame.PushFrame(types.Jint(1))
@@ -115,6 +141,10 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 					tn, _ = sc.GetConstant(sc.ThisClass)
 					sn, _ := sc.GetConstant(sc.SuperClass)
 					sc = clazz.GetClass(sn.Info.(*item.Utf8).Str)
+					if !ctx.Cinit(sc) {
+						return nil
+					}
+
 				}
 			}
 		}

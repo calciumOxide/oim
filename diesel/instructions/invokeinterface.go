@@ -59,7 +59,7 @@ func (s I_invokeinterface)Stroke(ctx *runtime.Context) error {
 		top, _ := ctx.CurrentFrame.PopFrame()
 		args = append(args, top)
 	}
-	ctx.InvokeMethod(method, args)
+	ctx.InvokeMethod(objectClass, method, args)
 	return nil
 }
 
