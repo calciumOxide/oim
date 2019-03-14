@@ -116,11 +116,11 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 						break
 					}
 					sn, _ := o.ElementType.(*clazz.ClassFile).GetConstant(o.ElementType.(*clazz.ClassFile).SuperClass)
-					is = clazz.GetClass(sn.Info.(*item.Utf8).Str).Interfaces
-					if !ctx.Cinit(is) {
+					isClass := clazz.GetClass(sn.Info.(*item.Utf8).Str)
+					if !ctx.Cinit(isClass) {
 						return nil
 					}
-
+					is = isClass.Interfaces
 				}
 			} else {
 				cn, _ := typeClass.GetConstant(typeClass.ThisClass)

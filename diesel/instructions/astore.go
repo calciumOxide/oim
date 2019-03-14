@@ -15,9 +15,15 @@ func init()  {
 func (s I_astore)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "astore exce >>>>>>>>>\n")
 
-	index := ctx.Code[ctx.PC]
+	index := uint32(0)
+	if ctx.PopWide() {
+		index = uint32(utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC + 2]))
+		ctx.PC += 2
+	} else {
+		index = uint32(ctx.Code[ctx.PC])
+		ctx.PC += 1
+	}
 	ref, _ := ctx.CurrentFrame.PopFrame()
-	ctx.PC += 1
 
 	ctx.CurrentAborigines.SetAborigines(uint32(index), ref)
 

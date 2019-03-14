@@ -17,7 +17,7 @@ func (s I_ret)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "ret exce >>>>>>>>>\n")
 
 	index := uint32(0)
-	if ctx.IsWide() {
+	if ctx.PopWide() {
 		index = uint32(ctx.Code[ctx.PC]) << 8 | uint32(ctx.Code[ctx.PC + 1])
 		ctx.PC += 2
 	} else {

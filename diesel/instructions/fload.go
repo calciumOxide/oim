@@ -18,8 +18,14 @@ func init()  {
 func (s I_fload)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "fload exce >>>>>>>>>\n")
 
-	index := ctx.Code[ctx.PC]
-	ctx.PC += 1
+	index := uint32(0)
+	if ctx.PopWide() {
+		index = uint32(utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC + 2]))
+		ctx.PC += 2
+	} else {
+		index = uint32(ctx.Code[ctx.PC])
+		ctx.PC += 1
+	}
 
 	value, _ := ctx.CurrentAborigines.GetAborigines(uint32(index))
 	if reflect.TypeOf(value) != reflect.TypeOf(types.Jfloat(0)) &&

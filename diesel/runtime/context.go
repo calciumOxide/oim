@@ -165,11 +165,11 @@ func (s *Context)Handle() error {
 	return nil
 }
 
-func (s *Context) Wide() {
+func (s *Context) PushWide() {
 	s.wide = true
 }
 
-func (s *Context) IsWide() bool {
+func (s *Context) PopWide() bool {
 	b := s.wide
 	s.wide = false
 	return b

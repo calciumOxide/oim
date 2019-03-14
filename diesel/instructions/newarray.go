@@ -35,7 +35,7 @@ func (s I_newarray)Stroke(ctx *runtime.Context) error {
 		return nil
 	}
 
-	jarray := oli.AllocJarray(count.(types.Jint), int(typer), 1)
+	jarray := oli.AllocJarray(count.(types.Jint), int(typer), 1, []types.Jint{count.(types.Jint)})
 
 	ctx.CurrentFrame.PushFrame(jarray)
 

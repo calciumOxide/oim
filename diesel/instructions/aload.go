@@ -15,9 +15,17 @@ func init()  {
 func (s I_aload)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "aload exce >>>>>>>>>\n")
 
-	value, _ := ctx.CurrentAborigines.GetAborigines(uint32(ctx.Code[ctx.PC]))
+	index := uint32(0)
+	if ctx.PopWide() {
+		index = uint32(utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC + 2]))
+		ctx.PC += 2
+	} else {
+		index = uint32(ctx.Code[ctx.PC])
+		ctx.PC += 1
+	}
+
+	value, _ := ctx.CurrentAborigines.GetAborigines(index)
 	ctx.CurrentFrame.PushFrame(value)
-	ctx.PC += 1
 	return nil
 }
 

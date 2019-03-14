@@ -16,7 +16,7 @@ func init()  {
 func (s I_wide)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "wide exce >>>>>>>>>\n")
 
-	ctx.Wide()
+	ctx.PushWide()
 	return nil
 }
 

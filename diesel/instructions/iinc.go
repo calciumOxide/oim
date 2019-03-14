@@ -17,11 +17,21 @@ func init()  {
 func (s I_iinc)Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "iinc exce >>>>>>>>>\n")
 
-	index := uint(ctx.Code[ctx.PC])
-	addor := types.Jint(ctx.Code[ctx.PC + 1])
-	ctx.PC += 2
+	index := uint32(0)
+	addor := uint32(0)
+	if ctx.PopWide() {
+		index = uint32(utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC + 2]))
+		ctx.PC += 2
+		addor = uint32(utils.BigEndian2Little4U2(ctx.Code[ctx.PC : ctx.PC + 2]))
+		ctx.PC += 2
+	} else {
+		index = uint32(ctx.Code[ctx.PC])
+		addor = uint32(ctx.Code[ctx.PC + 1])
+		ctx.PC += 2
+	}
+
 	value := ctx.CurrentAborigines.Layers[index]
-	ctx.CurrentAborigines.Layers[index] = value.(types.Jint) + addor
+	ctx.CurrentAborigines.Layers[index] = value.(types.Jint) + types.Jint(addor)
 	return nil
 }
 
