@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_inovkedynamic struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x74] = &I_inovkedynamic{}
 }
 
-func (s I_inovkedynamic)Stroke(ctx *runtime.Context) error {
+func (s I_inovkedynamic) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "inovkedynamic exce >>>>>>>>>\n")
 
 	value, _ := ctx.CurrentFrame.PopFrame()
@@ -30,7 +30,7 @@ func (s I_inovkedynamic)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_inovkedynamic)Test() *runtime.Context {
+func (s I_inovkedynamic) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -40,11 +40,12 @@ func (s I_inovkedynamic)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		调用动态方法
@@ -59,7 +60,7 @@ func (s I_inovkedynamic)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		0
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		invokedynamic = 186 (0xba)
 ======================================================================================
@@ -67,7 +68,7 @@ func (s I_inovkedynamic)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，
 ======================================================================================
-						||		
+						||
 		描述				||		代码中每条 invokedynamic 指令出现的位置都被称为一个动态调用点 (Dynamic Call Site)。
 						||		首先。无符号数 indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6) 的运行时常量池的索引值，
 						||		构建方式为(indexbyte1 << 8)| indexbyte2,
@@ -119,7 +120,7 @@ func (s I_inovkedynamic)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||		如果调用点限定符的符号引用解析过程中抛出了异常 E，那 invokedynamic 指令必须抛出包装着异常 E 的 BootstrapMethodError 异常。
 						||		另外，在调用点限定符的后续解析过程中，如果引导方法执行过程因异常 E 而 异常退出(§2.6.5)，那 invokedynamic 指令必须抛出包装着异常 E 的 BootstrapMethodError 异常。
 	   链接时异常			||		(这可能是由于引导方式有错误的参数长度、参数类型或者返回值而导致 java.lang.invoke.MethodHandle.invoke 方法抛出了 java.lang.invoke.WrongMethodTypeException 异常。)
@@ -141,4 +142,4 @@ func (s I_inovkedynamic)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

@@ -3,8 +3,8 @@ package item
 import "../../../utils"
 
 type FloatItemBin struct {
-	Bytes uint32 //按照 Big-Endian 的顺序存储
-	Value float32 
+	Bytes     uint32 //按照 Big-Endian 的顺序存储
+	Value     float32
 	Overflow  bool
 	Underflow bool
 	NaN       bool

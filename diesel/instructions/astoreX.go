@@ -1,24 +1,24 @@
 package instructions
 
 import (
-		"../runtime"
 	"../../utils"
-		)
+	"../runtime"
+)
 
 type I_astoreX struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x4b] = &I_astoreX{}
 	INSTRUCTION_MAP[0x4c] = &I_astoreX{}
 	INSTRUCTION_MAP[0x4d] = &I_astoreX{}
 	INSTRUCTION_MAP[0x4e] = &I_astoreX{}
 }
 
-func (s I_astoreX)Stroke(ctx *runtime.Context) error {
+func (s I_astoreX) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "astoreX exce >>>>>>>>>\n")
 
-	index := ctx.Code[ctx.PC - 1] - 0x4b
+	index := ctx.Code[ctx.PC-1] - 0x4b
 	ref, _ := ctx.CurrentFrame.PopFrame()
 
 	ctx.CurrentAborigines.SetAborigines(uint32(index), ref)
@@ -26,7 +26,7 @@ func (s I_astoreX)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_astoreX)Test() *runtime.Context {
+func (s I_astoreX) Test() *runtime.Context {
 
 	f1 := new(runtime.Frame)
 	f1.PushFrame(9999)
@@ -35,14 +35,15 @@ func (s I_astoreX)Test() *runtime.Context {
 	a = append(append(append(append(a, 1), 2), 3), 4)
 
 	return &runtime.Context{
-		PC: 0,
-		Code: []byte{0x4e, 0x2},
+		PC:           0,
+		Code:         []byte{0x4e, 0x2},
 		CurrentFrame: f1,
 		CurrentAborigines: &runtime.Aborigines{
 			Layers: a,
 		},
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		将一个 reference 类型数据保存到局部变量表中
@@ -53,11 +54,11 @@ func (s I_astoreX)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 						||		astore_0 = 75(0x4b)
 						||------------------------------------------------------------
@@ -71,7 +72,7 @@ func (s I_astoreX)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，
 ======================================================================================
-						||		
+						||
 						||		<n>必须是一个指向当前栈帧(§2.6)局部变量表的索引值，
 						||		而在操作数栈 栈顶的 objectref 必须是 returnAddress 或者 reference 类型的数据，
 						||		这个数据将从操作数栈出栈，然后保存到<n>所指向的局部变量表位置中。
@@ -81,13 +82,13 @@ func (s I_astoreX)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   链接时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -103,4 +104,4 @@ func (s I_astoreX)Test() *runtime.Context {
 						||		astore_<n>指令族中的每一条指令都与使用<n>作为 index 参数的 astore 指令作的作用一致，仅仅除了操作数<n>是隐式包含在指令中这点不同而已。
 						||
 ======================================================================================
- */
+*/

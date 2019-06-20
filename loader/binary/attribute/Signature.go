@@ -10,6 +10,7 @@ Signature 属性是可选的定长属性，位于 ClassFile(§4.1)，field_info(
 type Signature struct {
 	SignatureIndex uint16
 }
+
 /*
 signature_index 项的值必须是一个对常量池的有效索引。
 常量池在该索引处的项必 须是 CONSTANT_Utf8_info(§4.4.7)结构，

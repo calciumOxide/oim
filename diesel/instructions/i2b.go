@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_i2b struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x91] = &I_i2b{}
 }
 
-func (s I_i2b)Stroke(ctx *runtime.Context) error {
+func (s I_i2b) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "i2b exce >>>>>>>>>\n")
 
 	value, _ := ctx.CurrentFrame.PopFrame()
@@ -29,7 +29,7 @@ func (s I_i2b)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_i2b)Test() *runtime.Context {
+func (s I_i2b) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -38,11 +38,12 @@ func (s I_i2b)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		将 int 类型数据转换为 byte 类型
@@ -51,13 +52,13 @@ func (s I_i2b)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		i2b = 145(0x91)
 ======================================================================================
@@ -65,19 +66,19 @@ func (s I_i2b)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||
 		描述				||		value 必须是在操作数栈栈顶的 int 类型数据，指令执行时，value 从操作数栈中出栈，
 						||		转换成 byte 类型数据，然后带符号扩展(Sign-Extended)回一个 int 的结果压入到操作数栈之中。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -86,4 +87,4 @@ func (s I_i2b)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

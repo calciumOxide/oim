@@ -12,8 +12,8 @@ type NameAndTypeItemBin struct {
 }
 
 func AllocNameAndTypeItem(b []byte) (*NameAndTypeItemBin, int) {
-	return &NameAndTypeItemBin {
-		NameIndex: utils.BigEndian2Little4U2(b[:2]),
+	return &NameAndTypeItemBin{
+		NameIndex:       utils.BigEndian2Little4U2(b[:2]),
 		DescriptorIndex: utils.BigEndian2Little4U2(b[2:4]),
 	}, 4
 }
@@ -33,4 +33,3 @@ func AllocNameAndTypeItem(b []byte) (*NameAndTypeItemBin, int) {
 //	}
 //	return s.Descriptor
 //}
-

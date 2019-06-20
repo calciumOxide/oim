@@ -7,7 +7,7 @@ type ConstantValue struct {
 }
 
 func AllocConstantValue(b []byte) (*ConstantValue, int) {
-	return &ConstantValue {
+	return &ConstantValue{
 		ConstantValueIndex: utils.BigEndian2Little4U2(b[:2]),
 	}, 2
 }

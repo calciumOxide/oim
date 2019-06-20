@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_iand struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x7e] = &I_iand{}
 }
 
-func (s I_iand)Stroke(ctx *runtime.Context) error {
+func (s I_iand) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "iand exce >>>>>>>>>\n")
 
 	value1, _ := ctx.CurrentFrame.PopFrame()
@@ -31,7 +31,7 @@ func (s I_iand)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_iand)Test() *runtime.Context {
+func (s I_iand) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -41,11 +41,12 @@ func (s I_iand)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		对 int 类型数据进行按位与运算
@@ -54,13 +55,13 @@ func (s I_iand)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		iand = 126(0x7e)
 ======================================================================================
@@ -73,13 +74,13 @@ func (s I_iand)Test() *runtime.Context {
 						||		对这两个数进行按位与(Bitwis And)操作得到 int 类型数据 result，最后 result 被压入到操作数栈中。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -89,4 +90,4 @@ func (s I_iand)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

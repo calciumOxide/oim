@@ -3,13 +3,13 @@ package item
 import "../../../utils"
 
 type MethodHandleItemBin struct {
-	ReferenceKind ReferenceKind //reference_kind 项的值必须在 1 至 9 之间(包括 1 和 9)，它决定了方法句柄的类型。方法句柄类型的值表示方法句柄的字节码行为(Bytecode Behavior §5.4.3.5)
+	ReferenceKind  ReferenceKind //reference_kind 项的值必须在 1 至 9 之间(包括 1 和 9)，它决定了方法句柄的类型。方法句柄类型的值表示方法句柄的字节码行为(Bytecode Behavior §5.4.3.5)
 	ReferenceIndex uint16
 }
 
 func AllocMethodHandleItem(b []byte) (*MethodHandleItemBin, int) {
 	return &MethodHandleItemBin{
-		ReferenceKind: ReferenceKind(b[0]),
+		ReferenceKind:  ReferenceKind(b[0]),
 		ReferenceIndex: utils.BigEndian2Little4U2(b[1:3]),
 	}, 3
 }
@@ -34,6 +34,4 @@ const (
 	//如果 reference_kind 项的值是 9(REF_invokeInterface)，
 	// 那么常量池在 reference_index 索引处的项必须是 CONSTANT_InterfaceMethodref_info (§4.4.2)结构，表示由接口方法创建的方法句柄
 	INVOKE_INTERFACE
-
 )
-

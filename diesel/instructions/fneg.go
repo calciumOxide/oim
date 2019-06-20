@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_fneg struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x76] = &I_fneg{}
 }
 
-func (s I_fneg)Stroke(ctx *runtime.Context) error {
+func (s I_fneg) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "fneg exce >>>>>>>>>\n")
 
 	value, _ := ctx.CurrentFrame.PopFrame()
@@ -45,7 +45,7 @@ func (s I_fneg)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_fneg)Test() *runtime.Context {
+func (s I_fneg) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -55,11 +55,12 @@ func (s I_fneg)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		float 类型数据取负运算
@@ -68,13 +69,13 @@ func (s I_fneg)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		fneg = 118(0x76)
 ======================================================================================
@@ -82,7 +83,7 @@ func (s I_fneg)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||
 						||		value 必须为 float 类型数据，指令执行时，value 从操作数栈中出栈， 并且经过数值集合转换(§2.8.3)后得到值 value’
 						||		接着对这个数进行算 术取负运算，结果转换为 float 类型值 result，最后 result 被压入到操作数栈中。
@@ -95,13 +96,13 @@ func (s I_fneg)Test() *runtime.Context {
 						||			 如果操作数是零，那运算结果是与其符号相反的零值。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -111,4 +112,4 @@ func (s I_fneg)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

@@ -15,12 +15,12 @@ RuntimeInvisibleAnnotations 属性是一个变长属性，
 */
 type RuntimeInvisibleAnnotations struct {
 	AnnotationsCount uint16
-	Annotations []*Annotation
+	Annotations      []*Annotation
 }
 
 func AllocRuntimeInvisibleAnnotations(b []byte) (*RuntimeInvisibleAnnotations, int) {
 	offset := 2
-	v := RuntimeInvisibleAnnotations {
+	v := RuntimeInvisibleAnnotations{
 		AnnotationsCount: utils.BigEndian2Little4U2(b[:2]),
 	}
 	for i := uint16(0); i < v.AnnotationsCount; i++ {

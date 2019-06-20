@@ -1,15 +1,15 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-		)
+	"../runtime"
+)
 
 type I_iconstX struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x2] = &I_iconstX{}
 	INSTRUCTION_MAP[0x3] = &I_iconstX{}
 	INSTRUCTION_MAP[0x4] = &I_iconstX{}
@@ -20,16 +20,16 @@ func init()  {
 
 }
 
-func (s I_iconstX)Stroke(ctx *runtime.Context) error {
+func (s I_iconstX) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "iconstX exce >>>>>>>>>\n")
 
-	op := ctx.Code[ctx.PC - 1]
+	op := ctx.Code[ctx.PC-1]
 
 	ctx.CurrentFrame.PushFrame(types.Jint(uint32(op) - 0x3))
 	return nil
 }
 
-func (s I_iconstX)Test() *runtime.Context {
+func (s I_iconstX) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -40,11 +40,12 @@ func (s I_iconstX)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, types.Jfloat(1), types.JDO, types.JDU, types.JDN)
 	return &runtime.Context{
-		Code: []byte{0x2},
-		CurrentFrame: f,
+		Code:              []byte{0x2},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		将 int 类型数据压入到操作数栈中
@@ -53,13 +54,13 @@ func (s I_iconstX)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 						||		iconst_m1 = 2(0x2)
 		结构				||------------------------------------------------------------
@@ -79,22 +80,22 @@ func (s I_iconstX)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，<i>
 ======================================================================================
-						||		
+						||
 						||
 		描述				||			将 int 类型的常量<i>(-1，0，1，2，3，4 或者 5)压入到操作数栈中
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 		注意				||		iconst_<i>指令族中的每一条指令都与使用<i>作为参数的 bipush 指令作的作用一致，仅仅除了操作数<i>是隐式包含在指令中这点不同而已。
 						||
 ======================================================================================
- */
+*/

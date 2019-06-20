@@ -1,31 +1,31 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-		)
+	"../runtime"
+)
 
 type I_iinc struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x84] = &I_iinc{}
 
 }
 
-func (s I_iinc)Stroke(ctx *runtime.Context) error {
+func (s I_iinc) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "iinc exce >>>>>>>>>\n")
 
 	index := uint(ctx.Code[ctx.PC])
-	addor := types.Jint(ctx.Code[ctx.PC + 1])
+	addor := types.Jint(ctx.Code[ctx.PC+1])
 	ctx.PC += 2
 	value := ctx.CurrentAborigines.Layers[index]
 	ctx.CurrentAborigines.Layers[index] = value.(types.Jint) + addor
 	return nil
 }
 
-func (s I_iinc)Test() *runtime.Context {
+func (s I_iinc) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -35,11 +35,12 @@ func (s I_iinc)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, types.Jint(5))
 	return &runtime.Context{
-		Code: []byte{0x84, 0x0, 12},
-		CurrentFrame: f,
+		Code:              []byte{0x84, 0x0, 12},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		局部变量自增
@@ -50,11 +51,11 @@ func (s I_iinc)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		const
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		iinc = 132(0x84)
 ======================================================================================
@@ -68,13 +69,13 @@ func (s I_iinc)Test() *runtime.Context {
 						||		然后加到 由 index 定位到的局部变量中。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -82,4 +83,4 @@ func (s I_iinc)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

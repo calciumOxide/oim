@@ -1,18 +1,18 @@
 package instructions
 
 import (
-		"../runtime"
 	"../../utils"
-		)
+	"../runtime"
+)
 
 type I_astore struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x3a] = &I_astore{}
 }
 
-func (s I_astore)Stroke(ctx *runtime.Context) error {
+func (s I_astore) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "astore exce >>>>>>>>>\n")
 
 	index := ctx.Code[ctx.PC]
@@ -24,7 +24,7 @@ func (s I_astore)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_astore)Test() *runtime.Context {
+func (s I_astore) Test() *runtime.Context {
 
 	f1 := new(runtime.Frame)
 	f1.PushFrame(9999)
@@ -33,14 +33,15 @@ func (s I_astore)Test() *runtime.Context {
 	a = append(append(append(a, 1), 2), 4)
 
 	return &runtime.Context{
-		PC: 0,
-		Code: []byte{0x3a, 0x2},
+		PC:           0,
+		Code:         []byte{0x3a, 0x2},
 		CurrentFrame: f1,
 		CurrentAborigines: &runtime.Aborigines{
 			Layers: a,
 		},
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		将一个 reference 类型数据保存到局部变量表中
@@ -51,11 +52,11 @@ func (s I_astore)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		astore = 58(0x3a)
 ======================================================================================
@@ -63,7 +64,7 @@ func (s I_astore)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，
 ======================================================================================
-						||		
+						||
 						||
 						||		index 是一个无符号 byte 型整数，它必须是一个指向当前栈帧(§2.6)局 部变量表的索引值，
 						||		而在操作数栈栈顶的 objectref 必须是 returnAddress 或者 reference 类型的数据，
@@ -73,13 +74,13 @@ func (s I_astore)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   链接时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -96,4 +97,4 @@ func (s I_astore)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

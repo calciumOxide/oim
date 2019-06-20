@@ -1,18 +1,18 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
+	"../runtime"
 )
 
 type I_aastore struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x53] = &I_aastore{}
 }
 
-func (s I_aastore)Stroke(ctx *runtime.Context) error {
+func (s I_aastore) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "aastore exce >>>>>>>>>\n")
 
 	frame := ctx.CurrentFrame
@@ -27,7 +27,7 @@ func (s I_aastore)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_aastore)Test() *runtime.Context {
+func (s I_aastore) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.Depth = 3
 	f.Layers = append(f.Layers, uint32(0))
@@ -36,11 +36,12 @@ func (s I_aastore)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x32},
-		CurrentFrame: f,
+		Code:              []byte{0x32},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		从操作数栈读取一个 reference 类型数据存入到数组中
@@ -49,13 +50,13 @@ func (s I_aastore)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		aastore = 83(0x53)
 ======================================================================================
@@ -63,8 +64,8 @@ func (s I_aastore)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，
 ======================================================================================
-						||		
-						||		
+						||
+						||
 						||		arrayref 必须是一个 reference 类型的数据，它指向一个组件类型为 reference 的数组，index 必须为 int 类型，
 						||		value 必须为 reference类型。指令执行后，arrayref、index 和 value 同时从操作数栈出栈，
 						||		value 存储到 index 作为索引定位到数组元素中。
@@ -90,12 +91,12 @@ func (s I_aastore)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
-						||		
+						||
+						||
 						||		如果 arrayref 为 null，aastore 指令将抛出 NullPointerException 异常
 	   运行时异常			||		另外，如果 index 不在 arrayref 所代表的数组上下界范围中，aastore 指 令将抛出 ArrayIndexOutOfBoundsException 异常。
 						||		另外，如果 arrayref 不为 null，并且 value 的实际类型与数组组件类型 不能互相匹配(JLS3 §5.2)，aastore 指令将抛出 ArrayStoreException 异常。
-						||		
-						||		
+						||
+						||
 ======================================================================================
- */
+*/

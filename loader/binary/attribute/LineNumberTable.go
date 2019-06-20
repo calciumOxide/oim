@@ -11,11 +11,11 @@ LineNumberTable 属性是可选变长属性，位于 Code(§4.7.3)结构的属�
 */
 type LineNumberTable struct {
 	LineNumberTableLength uint16 //line_number_table[]数组的成员个 数。
-	LineNumberTableInfo []*LineNumberTableInfo
+	LineNumberTableInfo   []*LineNumberTableInfo
 }
 
 type LineNumberTableInfo struct {
-	StartPc uint16 //是 code[]数组的一个索引，code[]数组在该索引处的字符 表示源文件中新的行的起点。start_pc 项的值必须小于当前 LineNumberTable 属性所在的 Code 属性的 code_length 项的值。
+	StartPc    uint16 //是 code[]数组的一个索引，code[]数组在该索引处的字符 表示源文件中新的行的起点。start_pc 项的值必须小于当前 LineNumberTable 属性所在的 Code 属性的 code_length 项的值。
 	LineNumber uint16 //line_number 项的值必须与源文件的行数相匹配。
 }
 
@@ -34,7 +34,7 @@ func AllocLineNumberTable(b []byte) (*LineNumberTable, int) {
 
 func AllocLineNumberTableInfo(b []byte) (*LineNumberTableInfo, int) {
 	return &LineNumberTableInfo{
-		StartPc: utils.BigEndian2Little4U2(b[:2]),
-		LineNumber: utils.BigEndian2Little4U2(b[2 : 4]),
+		StartPc:    utils.BigEndian2Little4U2(b[:2]),
+		LineNumber: utils.BigEndian2Little4U2(b[2:4]),
 	}, 4
 }

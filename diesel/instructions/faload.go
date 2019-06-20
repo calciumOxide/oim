@@ -1,20 +1,20 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
-	"../variator"
 	"../oil/types"
+	"../runtime"
+	"../variator"
 )
 
 type I_faload struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x30] = &I_faload{}
 }
 
-func (s I_faload)Stroke(ctx *runtime.Context) error {
+func (s I_faload) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "faload exce >>>>>>>>>\n")
 
 	index, _ := ctx.CurrentFrame.PopFrame()
@@ -35,7 +35,7 @@ func (s I_faload)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_faload)Test() *runtime.Context {
+func (s I_faload) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []interface{}{1.11, 2.22, 3.33, 4.44},
@@ -44,11 +44,12 @@ func (s I_faload)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		从数组中加载一个 float 类型数据到操作数栈
@@ -57,13 +58,13 @@ func (s I_faload)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		faload = 48(0x30)
 ======================================================================================
@@ -71,19 +72,19 @@ func (s I_faload)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，value
 ======================================================================================
-						||		
+						||
 						||		arrayref 是一个 reference 类型的数据，它指向一个以 float 为组件类型的数组对象，
 		描述				||		index 是一个 int 型的数据。在指令执行 时，arrayref 和 index 都从操作数栈中出栈，
 						||		在数组中使用 index 为索引 index 作为索引定位到数组中的 float 类型值将压入到操作数栈中。
-						||		
+						||
 ======================================================================================
-						||		
+						||
 						||		如果 arrayref 为 null，faload 指令将抛出 NullPointerException 异 常。
 						||
 	   运行时异常			||		另外，如果 index 不在数组的上下界范围之内，faload 指令将抛出 ArrayIndexOutOfBoundsException 异常。
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||		faload 指令可以用来从数组中读取 byte 或者 boolean 的数据，在 Oracle 的虚拟机实现中，
@@ -93,4 +94,4 @@ func (s I_faload)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

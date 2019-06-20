@@ -1,29 +1,29 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
+	"../runtime"
 )
 
 type I_aloadX struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x2A] = &I_aloadX{}
 	INSTRUCTION_MAP[0x2B] = &I_aloadX{}
 	INSTRUCTION_MAP[0x2C] = &I_aloadX{}
 	INSTRUCTION_MAP[0x2D] = &I_aloadX{}
 }
 
-func (s I_aloadX)Stroke(ctx *runtime.Context) error {
+func (s I_aloadX) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "aloadX exce >>>>>>>>>\n")
 
-	value, _ := ctx.CurrentAborigines.GetAborigines(uint32(ctx.Code[ctx.PC  - 1]) - 0x2A)
+	value, _ := ctx.CurrentAborigines.GetAborigines(uint32(ctx.Code[ctx.PC-1]) - 0x2A)
 	ctx.CurrentFrame.PushFrame(value)
 	return nil
 }
 
-func (s I_aloadX)Test() *runtime.Context {
+func (s I_aloadX) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.Depth = 0
 	a := new(runtime.Aborigines)
@@ -32,11 +32,12 @@ func (s I_aloadX)Test() *runtime.Context {
 	a.Layers = append(a.Layers, &[]uint32{56})
 	a.Layers = append(a.Layers, &[]uint32{78})
 	return &runtime.Context{
-		Code: []byte{0x2C},
-		CurrentFrame: f,
+		Code:              []byte{0x2C},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		从局部变量表加载一个 reference 类型值到操作数栈中
@@ -51,7 +52,7 @@ func (s I_aloadX)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 						||		aload_0 = 42(0x2a)
 						||------------------------------------------------------------
@@ -65,19 +66,19 @@ func (s I_aloadX)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，objectref
 ======================================================================================
-						||		
+						||
 						||		<n>代表当前栈帧(§2.6)中局部变量表的索引值，<n>作为索引定位的局部 变量必须为 reference 类型，
 		描述				||		称为 objectref。指令执行后，objectref 将会压入到操作数栈栈顶
 						||
-						||		
+						||
 ======================================================================================
-						||		
-						||		
+						||
+						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -87,4 +88,4 @@ func (s I_aloadX)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

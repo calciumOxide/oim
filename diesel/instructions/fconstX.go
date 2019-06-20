@@ -1,30 +1,30 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-		)
+	"../runtime"
+)
 
 type I_fconstX struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xb] = &I_fconstX{}
 	INSTRUCTION_MAP[0xc] = &I_fconstX{}
 	INSTRUCTION_MAP[0xd] = &I_fconstX{}
 }
 
-func (s I_fconstX)Stroke(ctx *runtime.Context) error {
+func (s I_fconstX) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "fconstX exce >>>>>>>>>\n")
 
-	op := ctx.Code[ctx.PC - 1]
+	op := ctx.Code[ctx.PC-1]
 
 	ctx.CurrentFrame.PushFrame(types.Jfloat(uint32(op) - 0xb))
 	return nil
 }
 
-func (s I_fconstX)Test() *runtime.Context {
+func (s I_fconstX) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -35,11 +35,12 @@ func (s I_fconstX)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, types.Jfloat(1), types.JDO, types.JDU, types.JDN)
 	return &runtime.Context{
-		Code: []byte{0xb},
-		CurrentFrame: f,
+		Code:              []byte{0xb},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		将 float 类型数据压入到操作数栈中
@@ -48,13 +49,13 @@ func (s I_fconstX)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 						||		fconst_0 = 11(0xb)
 		结构				||------------------------------------------------------------
@@ -66,22 +67,22 @@ func (s I_fconstX)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，<d>
 ======================================================================================
-						||		
+						||
 						||
 		描述				||			将 float 类型的常量<d>(0.0 或 1.0)压入到操作数栈中。
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 		注意				||
 						||
 ======================================================================================
- */
+*/

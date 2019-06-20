@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../oil/types"
-	"../runtime"
-	"../../utils"
 	"../../loader/binary"
 	"../../loader/binary/attribute"
-		)
+	"../../utils"
+	"../oil/types"
+	"../runtime"
+)
 
 type I_athrow struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xbf] = &I_athrow{}
 }
 
-func (s I_athrow)Stroke(ctx *runtime.Context) error {
+func (s I_athrow) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "athrow exce >>>>>>>>>\n")
 
 	ref, _ := ctx.CurrentFrame.PopFrame()
@@ -24,7 +24,7 @@ func (s I_athrow)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_athrow)Test() *runtime.Context {
+func (s I_athrow) Test() *runtime.Context {
 	f2 := new(runtime.Frame)
 	f2.PushFrame(uint32(2))
 	f2.PushFrame(&types.Jreference{
@@ -51,8 +51,8 @@ func (s I_athrow)Test() *runtime.Context {
 				ExceptTableLength: 1,
 				ExceptTable: []*attribute.ExceptTable{
 					{
-						StartPc: 1,
-						EndPc: 4,
+						StartPc:   1,
+						EndPc:     4,
 						HandlerPc: 666,
 						CatchType: 333,
 					},
@@ -66,19 +66,20 @@ func (s I_athrow)Test() *runtime.Context {
 	return &runtime.Context{
 		PC: 2,
 
-		Code: []byte{0x2},
+		Code:      []byte{0x2},
 		CodeStack: [][]byte{{0x1}},
 
 		CurrentFrame: f2,
-		FrameStack: []*runtime.Frame{f1},
+		FrameStack:   []*runtime.Frame{f1},
 
 		CurrentMethod: m2,
-		MethodStack: []*binary.Method{m1},
+		MethodStack:   []*binary.Method{m1},
 
 		CurrentAborigines: a2,
-		AboriginesStack: []*runtime.Aborigines{a1},
+		AboriginesStack:   []*runtime.Aborigines{a1},
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		抛出一个异常实例(exception 或者 error)
@@ -89,11 +90,11 @@ func (s I_athrow)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		athrow = 191(0xbf)
 ======================================================================================
@@ -101,7 +102,7 @@ func (s I_athrow)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		objectref
 ======================================================================================
-						||		
+						||
 						||		objectref 必须为一个 reference 类型的数据，它指向一个 Throwable 或其子类的对象实例。
 						||		在指令执行时，objectref 首先从操作数栈中出栈，然后通过§2.10 中描述的算法搜索当前方法(§2.6)中与 objectref 的类 型相匹配的第一个异常处理器。
 						||
@@ -114,13 +115,13 @@ func (s I_athrow)Test() *runtime.Context {
 						||		假设已经没有任 何的栈帧可以退出，那当前线程将被结束掉。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   链接时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -141,4 +142,4 @@ func (s I_athrow)Test() *runtime.Context {
 						||		而从最 初抛出异常的那个方法一直到最终处理异常的那个方法(不含)之间的栈帧全 部都会被丢弃掉。
 						||
 ======================================================================================
- */
+*/

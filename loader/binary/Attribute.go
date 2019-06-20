@@ -41,7 +41,7 @@ func AllocAttribute(b []byte, cf *ClassFile) (*Attribute, int) {
 		NameIndex:       utils.BigEndian2Little4U2(b[:2]),
 		AttributeLength: utils.BigEndian2Little4U4(b[2:6]),
 	}
-	b = b[6: v.AttributeLength + 6]
+	b = b[6 : v.AttributeLength+6]
 	a := v.AttributeItem
 	constant, _ := cf.GetConstant(v.NameIndex)
 	v.AttributeName = AttributeName(constant.Info.(*item.Utf8ItemBin).Str)
@@ -123,15 +123,15 @@ func AllocCodes(b []byte, cf *ClassFile) (*attribute.Codes, int) {
 		CodeLength: utils.BigEndian2Little4U4(b[4:8]),
 	}
 	offset += int(v.CodeLength)
-	v.Code = b[8 : offset]
-	v.ExceptTableLength = utils.BigEndian2Little4U2(b[offset : offset + 2])
+	v.Code = b[8:offset]
+	v.ExceptTableLength = utils.BigEndian2Little4U2(b[offset : offset+2])
 	offset += 2
 	for i := uint16(0); i < v.ExceptTableLength; i++ {
 		t, size := attribute.AllocExceptTable(b[offset:])
 		v.ExceptTable = append(v.ExceptTable, t)
 		offset += size
 	}
-	v.AttributeCount = utils.BigEndian2Little4U2(b[offset : offset + 2])
+	v.AttributeCount = utils.BigEndian2Little4U2(b[offset : offset+2])
 	offset += 2
 	for i := uint16(0); i < v.AttributeCount; i++ {
 		a, size := AllocAttribute(b[offset:], cf)

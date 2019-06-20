@@ -41,28 +41,28 @@ func AllocStackFrame(b []byte) (*StackFrame, int) {
 	} else if t <= EMPTY_FRAME_1 {
 		print("===================================================>>>>>> stack fram empty")
 	} else if t <= SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED {
-		ve, size := AllocVerificationTypeInfo(b[offset + 2:])
+		ve, size := AllocVerificationTypeInfo(b[offset+2:])
 		i = &SameLocalsAnd1stackItemFrameExtended{
-			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset + 2]),
-			Stack: *ve,
+			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset+2]),
+			Stack:       *ve,
 		}
 		offset += 2 + size
 	} else if t <= CHOP_FRAME {
 		i = &ChopFrame{
-			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset + 2]),
+			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset+2]),
 		}
 		offset += 2
 	} else if t <= SAME_FRAME_EXTENDED {
 		i = &SameFrameExtended{
-			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset + 2]),
+			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset+2]),
 		}
 	} else if t <= APPEND_FRAME {
 		a := AppendFrame{
-			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset + 2]),
+			OffsetDelta: utils.BigEndian2Little4U2(b[offset : offset+2]),
 		}
 		i = &a
 		offset += 2
-		for k := uint8(0); k < uint8(t) - uint8(251); k++ {
+		for k := uint8(0); k < uint8(t)-uint8(251); k++ {
 			ve, size := AllocVerificationTypeInfo(b[offset:])
 			a.Locals = append(a.Locals, ve)
 			offset += size
@@ -92,7 +92,7 @@ type SameFrame struct {
 并且有一个 verification_type_info 项跟随在 此帧类型之后，用于表示那一个 stack 项的成员
 */
 type SameLocalsAnd1stackItemFrame struct {
-	Stack  VerificationTypeInfo
+	Stack VerificationTypeInfo
 }
 
 /*
@@ -139,7 +139,7 @@ type AppendFrame struct {
 
 /*************************************************************************************************************************/
 type VerificationTypeInfo struct {
-	Tag uint8
+	Tag                  uint8
 	VerificationTypeItem interface{}
 }
 
@@ -178,12 +178,12 @@ func AllocVerificationTypeInfo(b []byte) (*VerificationTypeInfo, int) {
 		i = nil
 	} else if OBJECT_VARIABLE == t {
 		i = ObjectVariableInfo{
-			ClassIndex: utils.BigEndian2Little4U2(b[offset : offset + 2]),
+			ClassIndex: utils.BigEndian2Little4U2(b[offset : offset+2]),
 		}
 		offset += 2
 	} else if UNINITIALIZED_VARIABLE == t {
 		i = UninitializedVariableInfo{
-			Offset: utils.BigEndian2Little4U2(b[offset : offset + 2]),
+			Offset: utils.BigEndian2Little4U2(b[offset : offset+2]),
 		}
 		offset += 2
 	} else {

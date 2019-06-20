@@ -1,18 +1,18 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
+	"../runtime"
 )
 
 type I_aload struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x19] = &I_aload{}
 }
 
-func (s I_aload)Stroke(ctx *runtime.Context) error {
+func (s I_aload) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "aload exce >>>>>>>>>\n")
 
 	value, _ := ctx.CurrentAborigines.GetAborigines(uint32(ctx.Code[ctx.PC]))
@@ -21,17 +21,18 @@ func (s I_aload)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_aload)Test() *runtime.Context {
+func (s I_aload) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.Depth = 0
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		从局部变量表加载一个 reference 类型值到操作数栈中
@@ -40,13 +41,13 @@ func (s I_aload)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		index
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		aload = 25(0x19)
 ======================================================================================
@@ -54,19 +55,19 @@ func (s I_aload)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，objectref
 ======================================================================================
-						||		
+						||
 						||		index 是一个代表当前栈帧(§2.6)中局部变量表的索引的无符号 byte 类 型整数，
 		描述				||		index 作为索引定位的局部变量必须为 reference 类型，
 						||		称为objectref。指令执行后，objectref 将会压入到操作数栈栈顶
-						||		
+						||
 ======================================================================================
-						||		
-						||		
+						||
+						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -76,4 +77,4 @@ func (s I_aload)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

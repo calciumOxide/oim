@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_fmul struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x6a] = &I_fmul{}
 }
 
-func (s I_fmul)Stroke(ctx *runtime.Context) error {
+func (s I_fmul) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "fmul exce >>>>>>>>>\n")
 
 	value2, _ := ctx.CurrentFrame.PopFrame()
@@ -63,7 +63,7 @@ func (s I_fmul)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_fmul)Test() *runtime.Context {
+func (s I_fmul) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -73,11 +73,12 @@ func (s I_fmul)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		float 类型数据乘法
@@ -86,13 +87,13 @@ func (s I_fmul)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		fmul = 106(0x6a)
 ======================================================================================
@@ -100,7 +101,7 @@ func (s I_fmul)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||
 						||		value1 和 value2 都必须为 float 类型数据，指令执行时，value1 和 value2 从操作数栈中出栈，
 						||		并且经过数值集合转换(§2.8.3)后得到值 value1’和 value2’，
@@ -119,13 +120,13 @@ func (s I_fmul)Test() *runtime.Context {
 						||		Java 虚拟机必须支持 IEEE 754 中定义的逐级下溢(Gradual Underflow)， 尽管指令执行期间，上溢、下溢以及精度丢失等情况都有可能发生，但 fmul 指令永远不会抛出任何运行时异常。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -135,4 +136,4 @@ func (s I_fmul)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

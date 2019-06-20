@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_d2i struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x8e] = &I_d2i{}
 }
 
-func (s I_d2i)Stroke(ctx *runtime.Context) error {
+func (s I_d2i) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "d2i exce >>>>>>>>>\n")
 
 	value, _ := ctx.CurrentFrame.PopFrame()
@@ -41,7 +41,7 @@ func (s I_d2i)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_d2i)Test() *runtime.Context {
+func (s I_d2i) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -50,11 +50,12 @@ func (s I_d2i)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		将 double 类型数据转换为 int 类型
@@ -63,13 +64,13 @@ func (s I_d2i)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		d2i = 142(0x8e)
 ======================================================================================
@@ -77,7 +78,7 @@ func (s I_d2i)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||
 						||		在操作数栈栈顶的值 value 必须为 double 类型的数据，指令执行时，value 从操作数栈中出栈，并且经过数值集合转换(§2.8.3)后得到值 value’，
 						||		value’再转换为 int 类型值 result。然后 result 被压入到操作数栈中。
@@ -91,13 +92,13 @@ func (s I_d2i)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -107,4 +108,4 @@ func (s I_d2i)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

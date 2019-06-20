@@ -1,20 +1,20 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
+	"../runtime"
 	"../variator"
-	)
+)
 
 type I_dup struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x59] = &I_dup{}
 }
 
-func (s I_dup)Stroke(ctx *runtime.Context) error {
+func (s I_dup) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "dup exce >>>>>>>>>\n")
 
 	value, _ := ctx.CurrentFrame.PeekFrame()
@@ -27,7 +27,7 @@ func (s I_dup)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_dup)Test() *runtime.Context {
+func (s I_dup) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -37,11 +37,12 @@ func (s I_dup)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		复制操作数栈栈顶的值，并插入到栈顶
@@ -50,13 +51,13 @@ func (s I_dup)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		dup = 89(0x59)
 ======================================================================================
@@ -69,13 +70,13 @@ func (s I_dup)Test() *runtime.Context {
 						||		如果 value 不是§2.11.1 的表 2.3 中列出的分类一中的数据类型，就不能使用 dup 指令来复制栈顶值。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -85,4 +86,4 @@ func (s I_dup)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

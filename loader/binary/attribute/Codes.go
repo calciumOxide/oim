@@ -21,6 +21,7 @@ type ExceptTable struct {
 	HandlerPc uint16
 	CatchType uint16 //如果 catch_type 项的值不为 0，那么它必须是对常量池的一个有效索引，常量池 在该索引处的项必须是 CONSTANT_Class_info(§4.4.1)
 }
+
 //包依赖
 //func AllocCodes(b []byte, cf *binary.ClassFile) (*Codes, int) {
 //	offset := 8

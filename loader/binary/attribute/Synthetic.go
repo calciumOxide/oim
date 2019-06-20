@@ -1,6 +1,5 @@
 package attribute
 
-
 /*
 Synthetic 属性是定长属性，位于 ClassFile(§4.1)中的属性表。
 如果一个类成员没 有在源文件中出现，则必须标记带有 Synthetic 属性，

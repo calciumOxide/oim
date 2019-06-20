@@ -1,24 +1,24 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-		)
+	"../runtime"
+)
 
 type I_if_acmpX struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xa5] = &I_if_acmpX{}
 	INSTRUCTION_MAP[0xa6] = &I_if_acmpX{}
 }
 
-func (s I_if_acmpX)Stroke(ctx *runtime.Context) error {
+func (s I_if_acmpX) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "if_acmpX exce >>>>>>>>>\n")
 
-	op := ctx.Code[ctx.PC - 1]
-	branch := uint32(ctx.Code[ctx.PC]) << 8 | uint32(ctx.Code[ctx.PC + 1])
+	op := ctx.Code[ctx.PC-1]
+	branch := uint32(ctx.Code[ctx.PC])<<8 | uint32(ctx.Code[ctx.PC+1])
 	ctx.PC += 2
 	value2, _ := ctx.CurrentFrame.PopFrame()
 	value1, _ := ctx.CurrentFrame.PopFrame()
@@ -29,7 +29,7 @@ func (s I_if_acmpX)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_if_acmpX)Test() *runtime.Context {
+func (s I_if_acmpX) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -42,11 +42,12 @@ func (s I_if_acmpX)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0xa5, 0x0, 12},
-		CurrentFrame: f,
+		Code:              []byte{0xa5, 0x0, 12},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		reference 数据的据条件分支判断
@@ -57,11 +58,11 @@ func (s I_if_acmpX)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		branchbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 						||		if_acmpeq = 165(0xa5)
 		结构				||------------------------------------------------------------
@@ -71,7 +72,7 @@ func (s I_if_acmpX)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，
 ======================================================================================
-						||		
+						||
 						||
 						||		value1 和 value2 都必须为 reference 类型数据，指令执行时，value1 和 value2 从操作数栈中出栈，
 						||		然后进行比较运算，比较的规则如下:
@@ -85,13 +86,13 @@ func (s I_if_acmpX)Test() *runtime.Context {
 						||		另外，如果比较结果为假，那程序将继续执行 if_acmp<cond>指令后面的其 他直接码指令。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -99,4 +100,4 @@ func (s I_if_acmpX)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

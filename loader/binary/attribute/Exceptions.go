@@ -26,7 +26,7 @@ func AllocExceptions(b []byte) (*Exceptions, int) {
 		ExceptionCount: utils.BigEndian2Little4U2(b[:2]),
 	}
 	for i := uint16(0); i < v.ExceptionCount; i++ {
-		v.ExceptionIndex = append(v.ExceptionIndex, utils.BigEndian2Little4U2(b[offset : offset + 2]))
+		v.ExceptionIndex = append(v.ExceptionIndex, utils.BigEndian2Little4U2(b[offset:offset+2]))
 		offset += 2
 	}
 	return &v, offset

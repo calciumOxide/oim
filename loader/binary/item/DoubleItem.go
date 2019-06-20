@@ -20,7 +20,7 @@ func AllocDoubleItem(b []byte) (*DoubleItemBin, int) {
 		v.Overflow = true
 	} else if l == UNDER_FLOW {
 		v.Underflow = true
-	} else if (l >= NAN_MIN_1 && l  <= NAN_MAX_1) || (l >= NAN_MIN_2 && l <= NAN_MAX_2) {
+	} else if (l >= NAN_MIN_1 && l <= NAN_MAX_1) || (l >= NAN_MIN_2 && l <= NAN_MAX_2) {
 		v.NaN = true
 	} else {
 		s := int64(-1)
@@ -47,8 +47,8 @@ func AllocDoubleItem(b []byte) (*DoubleItemBin, int) {
 const (
 	OVER_FLOW  uint64 = 0X7FF0000000000000
 	UNDER_FLOW uint64 = 0XFFF0000000000000
-	NAN_MIN_1 uint64 = 0X7FF0000000000001
-	NAN_MAX_1 uint64 = 0X7FFFFFFFFFFFFFFF
-	NAN_MIN_2 uint64 = 0XFFF0000000000001
-	NAN_MAX_2 uint64 = 0XFFFFFFFFFFFFFFFF
+	NAN_MIN_1  uint64 = 0X7FF0000000000001
+	NAN_MAX_1  uint64 = 0X7FFFFFFFFFFFFFFF
+	NAN_MIN_2  uint64 = 0XFFF0000000000001
+	NAN_MAX_2  uint64 = 0XFFFFFFFFFFFFFFFF
 )

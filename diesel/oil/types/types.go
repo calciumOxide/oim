@@ -18,21 +18,31 @@ type Jbyte int8
 
 type Jchar uint8
 
-type Jdouble  float64
+type Jdouble float64
 type jdoubleO float64
-var  JDO = jdoubleO(1.7976931348623157e+308)
-type jdoubleU float64
-var  JDU = jdoubleU(-1.7976931348623157e+308)
-type jdoubleN float64
-var  JDN = jdoubleN(1.4E-45)
 
-type Jfloat  float32
+var JDO = jdoubleO(1.7976931348623157e+308)
+
+type jdoubleU float64
+
+var JDU = jdoubleU(-1.7976931348623157e+308)
+
+type jdoubleN float64
+
+var JDN = jdoubleN(1.4E-45)
+
+type Jfloat float32
 type jfloatO float32
-var  JFO = jfloatO(3.4028235e+38)
+
+var JFO = jfloatO(3.4028235e+38)
+
 type jfloatU float32
-var  JFU = jfloatU(-3.4028235e+38)
+
+var JFU = jfloatU(-3.4028235e+38)
+
 type jfloatN float32
-var  JFN = jfloatN(1.4e-45)
+
+var JFN = jfloatN(1.4e-45)
 
 type Jint int32
 
@@ -55,5 +65,5 @@ type Jarray struct {
 
 type Jobject struct {
 	ClassTypeIndex uint16
-	Fileds map[string]interface{}
+	Fileds         map[string]interface{}
 }

@@ -1,19 +1,19 @@
 package instructions
 
 import (
+	"../../utils"
 	"../oil/types"
 	"../runtime"
-	"../../utils"
-		)
+)
 
 type I_arraylength struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xbe] = &I_arraylength{}
 }
 
-func (s I_arraylength)Stroke(ctx *runtime.Context) error {
+func (s I_arraylength) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "arraylength exce >>>>>>>>>\n")
 
 	ref, _ := ctx.CurrentFrame.PopFrame()
@@ -25,7 +25,7 @@ func (s I_arraylength)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_arraylength)Test() *runtime.Context {
+func (s I_arraylength) Test() *runtime.Context {
 
 	var a []interface{}
 	a = append(append(append(a, 1), 2), 4)
@@ -34,13 +34,13 @@ func (s I_arraylength)Test() *runtime.Context {
 		Reference: a,
 	})
 
-
 	return &runtime.Context{
-		PC: 2,
-		Code: []byte{0x2},
+		PC:           2,
+		Code:         []byte{0x2},
 		CurrentFrame: f1,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		取数组长度
@@ -51,11 +51,11 @@ func (s I_arraylength)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		arraylength = 190(0xbe)
 ======================================================================================
@@ -63,7 +63,7 @@ func (s I_arraylength)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，length
 ======================================================================================
-						||		
+						||
 						||
 						||		arrayref 必须是指向数组的 reference 类型的数据，指令执行时， arrayref 从操作数栈中出栈，
 						||		数组的长度 length 将被计算出来并作为一个 int 类型数据压入到操作数栈中。
@@ -73,13 +73,13 @@ func (s I_arraylength)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   链接时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -95,4 +95,4 @@ func (s I_arraylength)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

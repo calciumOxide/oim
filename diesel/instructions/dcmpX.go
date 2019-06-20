@@ -1,25 +1,25 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_dcmpX struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x97] = &I_dcmpX{}
 	INSTRUCTION_MAP[0x98] = &I_dcmpX{}
 }
 
-func (s I_dcmpX)Stroke(ctx *runtime.Context) error {
+func (s I_dcmpX) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "dcmpX exce >>>>>>>>>\n")
 
-	op := ctx.Code[ctx.PC - 1]
+	op := ctx.Code[ctx.PC-1]
 	value2, _ := ctx.CurrentFrame.PopFrame()
 	value1, _ := ctx.CurrentFrame.PopFrame()
 
@@ -60,7 +60,7 @@ func (s I_dcmpX)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_dcmpX)Test() *runtime.Context {
+func (s I_dcmpX) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -71,11 +71,12 @@ func (s I_dcmpX)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x97},
-		CurrentFrame: f,
+		Code:              []byte{0x97},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		比较 2 个 double 类型数据的大小
@@ -84,13 +85,13 @@ func (s I_dcmpX)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 						||		dcmpg = 152(0x98)
 		结构				||------------------------------------------------------------
@@ -100,7 +101,7 @@ func (s I_dcmpX)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||
 						||		value1 和 value2 都必须为 double 类型数据，指令执行时，value1 和 value2 从操作数栈中出栈，
 						||		并且经过数值集合转换(§2.8.3)后得到值value1’和 value2’，接着对这 2 个值进行浮点比较操作:
@@ -113,13 +114,13 @@ func (s I_dcmpX)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||		dcmpg 和 dcmpl 指令之间的差别仅仅是当比价参数中出现 NaN 值时的处理方 式而已。
@@ -128,4 +129,4 @@ func (s I_dcmpX)Test() *runtime.Context {
 						||		读者可以参见§3.5“更多控制例子”获取更多的信息。
 						||
 ======================================================================================
- */
+*/

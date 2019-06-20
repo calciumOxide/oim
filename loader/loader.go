@@ -1,9 +1,9 @@
 package loader
 
 import (
-	"./binary"
 	"../loader/butcher"
 	"../loader/butcher/rope"
+	"./binary"
 )
 
 func Loader(name string) *binary.ClassFile {

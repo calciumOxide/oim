@@ -1,29 +1,29 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-				)
+	"../runtime"
+)
 
 type I_goto struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xa7] = &I_goto{}
 }
 
-func (s I_goto)Stroke(ctx *runtime.Context) error {
+func (s I_goto) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "goto exce >>>>>>>>>\n")
 
-	offset := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC + 1])
+	offset := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC+1])
 	ctx.PC += 2
 	ctx.PC = uint32(offset)
 
 	return nil
 }
 
-func (s I_goto)Test() *runtime.Context {
+func (s I_goto) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -33,17 +33,18 @@ func (s I_goto)Test() *runtime.Context {
 	f.PushFrame(types.Jreference{
 		Reference: types.Jobject{
 			ClassTypeIndex: 4,
-			Fileds: fields,
+			Fileds:         fields,
 		},
 	})
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x0, 0x8},
-		CurrentFrame: f,
+		Code:              []byte{0x0, 0x0, 0x8},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		分支跳转
@@ -54,11 +55,11 @@ func (s I_goto)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		branchbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		goto = 167(0xa7)
 ======================================================================================
@@ -66,18 +67,18 @@ func (s I_goto)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...， →
 ======================================================================================
-						||		
+						||
 						||		无符号 byte 型数据 branchbyte1 和 branchbyte2 用于构建一个 16 位有 符号的分支偏移量，构建方式为(branchbyte1 << 8)| branchbyte2。
 		描述				||		指令执行后，程序将会转到这个 goto 指令之后的，由上述偏移量确定的目标 地址上继续执行。这个目标地址必须处于 goto 指令所在的方法之中。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   链接时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -95,4 +96,4 @@ func (s I_goto)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

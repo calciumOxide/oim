@@ -1,24 +1,24 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-			"../variator"
+	"../runtime"
+	"../variator"
 	"reflect"
 )
 
 type I_checkcast struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xc0] = &I_checkcast{}
 }
 
-func (s I_checkcast)Stroke(ctx *runtime.Context) error {
+func (s I_checkcast) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "checkcast exce >>>>>>>>>\n")
 
-	index := uint16(ctx.Code[ctx.PC]) << 8 | uint16(ctx.Code[ctx.PC + 1])
+	index := uint16(ctx.Code[ctx.PC])<<8 | uint16(ctx.Code[ctx.PC+1])
 	ctx.PC += 2
 	ref, _ := ctx.CurrentFrame.PeekFrame()
 
@@ -37,7 +37,7 @@ func (s I_checkcast)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_checkcast)Test() *runtime.Context {
+func (s I_checkcast) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jreference{
 		Reference: &types.Jobject{
@@ -49,11 +49,12 @@ func (s I_checkcast)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x0F, 0x0F},
-		CurrentFrame: f,
+		Code:              []byte{0x0, 0x0F, 0x0F},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		检查对象是否符合给定的类型
@@ -64,11 +65,11 @@ func (s I_checkcast)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		Indexbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		checkcast = 192(0xc0)
 ======================================================================================
@@ -76,7 +77,7 @@ func (s I_checkcast)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，objectref
 ======================================================================================
-						||		
+						||
 						||		objectref 必须为 reference 类型的数据，indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6)的运行时常量池的索引值，
 		描述				||		构建方式为 (indexbyte1 << 8)| indexbyte2，该索引所指向的运行时常量池项应 当是一个类、接口或者数组类型的符号引用。
 						||
@@ -102,13 +103,13 @@ func (s I_checkcast)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   链接时异常			||		在类、接口或者数组的符号解析阶段，任何在§5.4.3.1 章节中描述的异常 都可能被抛出。
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -126,4 +127,4 @@ func (s I_checkcast)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

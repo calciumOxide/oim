@@ -8,13 +8,12 @@ import "../../../utils"
 
 type InvokeDynamicItemBin struct {
 	BootstrapMethodsAttributeIndex uint16 //对当前 Class 文件中引导方法表(§ 4.7.21)的 bootstrap_methods[]数组的有效索引
-	NameAndTypeIndex uint16 //对当前常量池的有效索引，常量池在该索引处的 项必须是 CONSTANT_NameAndType_info(§4.4.6)结构，表示方法名和方法描述 符(§4.3.3)。
+	NameAndTypeIndex               uint16 //对当前常量池的有效索引，常量池在该索引处的 项必须是 CONSTANT_NameAndType_info(§4.4.6)结构，表示方法名和方法描述 符(§4.3.3)。
 }
 
 func AllocInvokeDynamicItem(b []byte) (*InvokeDynamicItemBin, int) {
-	return &InvokeDynamicItemBin {
+	return &InvokeDynamicItemBin{
 		BootstrapMethodsAttributeIndex: utils.BigEndian2Little4U2(b[:2]),
-		NameAndTypeIndex: utils.BigEndian2Little4U2(b[2:4]),
+		NameAndTypeIndex:               utils.BigEndian2Little4U2(b[2:4]),
 	}, 4
 }
-

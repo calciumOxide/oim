@@ -10,12 +10,12 @@ Java 虚拟机必须支持这些注解可被反射的 API 使用它们。
 */
 type RuntimeVisibleAnnotations struct {
 	AnnotationCount uint16
-	Annotations []*Annotation
+	Annotations     []*Annotation
 }
 
 func AllocRuntimeVisibleAnnotations(b []byte) (*RuntimeVisibleAnnotations, int) {
 	offset := 2
-	v := RuntimeVisibleAnnotations {
+	v := RuntimeVisibleAnnotations{
 		AnnotationCount: utils.BigEndian2Little4U2(b[:2]),
 	}
 	for i := uint16(0); i < v.AnnotationCount; i++ {
@@ -25,4 +25,3 @@ func AllocRuntimeVisibleAnnotations(b []byte) (*RuntimeVisibleAnnotations, int) 
 	}
 	return &v, offset
 }
-

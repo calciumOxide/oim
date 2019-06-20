@@ -2,7 +2,7 @@ package lube
 
 import "../oil/types"
 
-func AllocArray(ls... uint32) (interface{}, error) {
+func AllocArray(ls ...uint32) (interface{}, error) {
 	return allocArray(ls)
 }
 
@@ -11,7 +11,7 @@ func allocArray(ls []uint32) (interface{}, error) {
 		return nil, nil
 	}
 	var a []interface{}
-	for i := uint32(0); i< ls[0]; i++ {
+	for i := uint32(0); i < ls[0]; i++ {
 		ar, _ := allocArray(ls[1:])
 		a = append(a, ar)
 	}

@@ -1,26 +1,26 @@
 package instructions
 
 import (
-	"../runtime"
-	"../../utils"
-	"../oil/types"
-	"reflect"
-	"../variator"
 	"../../loader/binary"
 	"../../loader/binary/item"
+	"../../utils"
+	"../oil/types"
+	"../runtime"
+	"../variator"
+	"reflect"
 )
 
 type I_instanceof struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xc1] = &I_instanceof{}
 }
 
-func (s I_instanceof)Stroke(ctx *runtime.Context) error {
+func (s I_instanceof) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "instanceof exce >>>>>>>>>\n")
 
-	i := uint16(ctx.Code[ctx.PC]) << 8 | uint16(ctx.Code[ctx.PC + 1])
+	i := uint16(ctx.Code[ctx.PC])<<8 | uint16(ctx.Code[ctx.PC+1])
 	obj, _ := ctx.CurrentFrame.PopFrame()
 	ot := reflect.TypeOf(&types.Jreference{})
 
@@ -38,7 +38,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 	}
 	name, _ := ctx.Clazz.GetConstant(cp.Info.(*item.Class).NameIndex)
 	typeClass := binary.GetClass(name.Info.(*item.Utf8).Str)
-	
+
 	o := &types.Jreference{}
 	if reflect.TypeOf(obj) == reflect.TypeOf(&types.Jarray{}) {
 		o.ElementType = obj.(*types.Jarray).ElementJype
@@ -51,7 +51,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 				cn, _ := typeClass.GetConstant(typeClass.ThisClass)
 				tn, _ := o.ElementType.(*binary.ClassFile).GetConstant(o.ElementType.(*binary.ClassFile).ThisClass)
 				sc := binary.GetClass(tn.Info.(*item.Utf8).Str)
-				for ; ; {
+				for {
 					if cn.Info.(*item.Utf8).Str == tn.Info.(*item.Utf8).Str {
 						ctx.CurrentFrame.PushFrame(types.Jint(1))
 						return nil
@@ -71,7 +71,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 			}
 		} else {
 			if typeClass.AccessFlags&binary.ACC_INTERFACE == binary.ACC_INTERFACE {
-				for ; ; {
+				for {
 					is := o.ElementType.(*binary.ClassFile).Interfaces
 					for ii := 0; ii < len(is); ii++ {
 						in, _ := o.ElementType.(*binary.ClassFile).GetConstant(is[ii])
@@ -81,7 +81,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 							return nil
 						}
 						inf := binary.GetClass(in.Info.(*item.Utf8).Str)
-						for ; ; {
+						for {
 							if inf != nil && inf.SuperClass != 0 {
 								in, _ = inf.GetConstant(inf.ThisClass)
 								if in.Info.(*item.Utf8).Str == cn.Info.(*item.Utf8).Str {
@@ -104,7 +104,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 				cn, _ := typeClass.GetConstant(typeClass.ThisClass)
 				tn, _ := o.ElementType.(*binary.ClassFile).GetConstant(o.ElementType.(*binary.ClassFile).ThisClass)
 				sc := binary.GetClass(tn.Info.(*item.Utf8).Str)
-				for ; ; {
+				for {
 					if cn.Info.(*item.Utf8).Str == tn.Info.(*item.Utf8).Str {
 						ctx.CurrentFrame.PushFrame(types.Jint(1))
 						return nil
@@ -126,7 +126,7 @@ func (s I_instanceof)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_instanceof)Test() *runtime.Context {
+func (s I_instanceof) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -136,11 +136,12 @@ func (s I_instanceof)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		判断对象是否指定的类型
@@ -151,11 +152,11 @@ func (s I_instanceof)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		indexbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		instanceof = 193(0xc1)
 ======================================================================================
@@ -163,7 +164,7 @@ func (s I_instanceof)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||		objectref 必须是一个 reference 类型的数据，在指令执行时，objectref 将从操作数栈中出栈。
 						||		无符号数 indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6)的运行时常量池的索引值，
 		描述				||		构建方式为(indexbyte1 << 8) | indexbyte2，该索引所指向的运行时常量池项应当是一个类、接口或者数 组类型的符号引用。
@@ -189,13 +190,13 @@ func (s I_instanceof)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   链接时异常			||		在类、接口或者数组的符号解析阶段，任何在§5.4.3.1 章节中描述的异常 都可能被抛出。
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -213,4 +214,4 @@ func (s I_instanceof)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

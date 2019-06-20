@@ -4,9 +4,9 @@ import "../../../utils"
 
 /**
 StackMapTable 属性是一个变长属性，位于 Code(§4.7.3)属性的属性表中。这个属性 会在虚拟机类加载的类型阶段(§4.10.1)被使用
- */
+*/
 type StackMapTable struct {
-	FrameCount uint16
+	FrameCount  uint16
 	StackFrames []*StackFrame
 }
 

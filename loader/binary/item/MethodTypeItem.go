@@ -7,7 +7,7 @@ type MethodTypeItemBin struct {
 }
 
 func AllocMethodTypeItem(b []byte) (*MethodTypeItemBin, int) {
-	return &MethodTypeItemBin {
+	return &MethodTypeItemBin{
 		DescriptorIndex: utils.BigEndian2Little4U2(b[:2]),
 	}, 2
 }

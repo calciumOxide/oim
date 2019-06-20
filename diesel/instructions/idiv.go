@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_idiv struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x6c] = &I_idiv{}
 }
 
-func (s I_idiv)Stroke(ctx *runtime.Context) error {
+func (s I_idiv) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "idiv exce >>>>>>>>>\n")
 
 	value2, _ := ctx.CurrentFrame.PopFrame()
@@ -31,7 +31,7 @@ func (s I_idiv)Stroke(ctx *runtime.Context) error {
 		ctx.Throw(except)
 		return nil
 	}
- 	if value1.(types.Jint) == -2147483648 && value2.(types.Jint) == -1 {
+	if value1.(types.Jint) == -2147483648 && value2.(types.Jint) == -1 {
 		ctx.CurrentFrame.PushFrame(value1)
 		return nil
 	}
@@ -39,7 +39,7 @@ func (s I_idiv)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_idiv)Test() *runtime.Context {
+func (s I_idiv) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -50,11 +50,12 @@ func (s I_idiv)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		int 类型数据除法
@@ -63,13 +64,13 @@ func (s I_idiv)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		idiv = 108(0x6c)
 ======================================================================================
@@ -77,7 +78,7 @@ func (s I_idiv)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||
 						||		value1 和 value2 都必须为 int 类型数据，指令执行时，value1 和 value2 从操作数栈中出栈，
 						||		并且将这两个数值相除(value1÷value2)，结果转换为 int 类型值 result，最后 result 被压入到操作数栈中。
@@ -90,13 +91,13 @@ func (s I_idiv)Test() *runtime.Context {
 						||		那运算时将会发生溢出，运算结果就等于被除数本身。尽管 这里发生了溢出，但是依然不会有异常抛出。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||		如果除数为零，idiv 指令将抛出 ArithmeticException 异常。
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -106,4 +107,4 @@ func (s I_idiv)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

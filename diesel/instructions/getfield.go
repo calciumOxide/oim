@@ -1,25 +1,25 @@
 package instructions
 
 import (
-	"../runtime"
+	"../../loader/binary/item"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
-		"../../loader/binary/item"
+	"reflect"
 )
 
 type I_getfield struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xb4] = &I_getfield{}
 }
 
-func (s I_getfield)Stroke(ctx *runtime.Context) error {
+func (s I_getfield) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "getfield exce >>>>>>>>>\n")
 
-	index := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC + 1])
+	index := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC+1])
 	ctx.PC += 2
 	ref, _ := ctx.CurrentFrame.PopFrame()
 
@@ -68,7 +68,7 @@ func (s I_getfield)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_getfield)Test() *runtime.Context {
+func (s I_getfield) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -78,17 +78,18 @@ func (s I_getfield)Test() *runtime.Context {
 	f.PushFrame(types.Jreference{
 		Reference: types.Jobject{
 			ClassTypeIndex: 4,
-			Fileds: fields,
+			Fileds:         fields,
 		},
 	})
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x0, 0x3},
-		CurrentFrame: f,
+		Code:              []byte{0x0, 0x0, 0x3},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		获取对象的字段值
@@ -99,11 +100,11 @@ func (s I_getfield)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		indexbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		getfield = 180(0xb4)
 ======================================================================================
@@ -111,7 +112,7 @@ func (s I_getfield)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，value
 ======================================================================================
-						||		
+						||
 						||		objectref 必须是一个 reference 类型的数据，在指令执行时，objectref 将从操作数栈中出栈。
 						||		无符号数 indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6)的运行时常量池的索引值，
 						||		构建方式为(indexbyte1 << 8) | indexbyte2，
@@ -124,13 +125,13 @@ func (s I_getfield)Test() *runtime.Context {
 						||		并且这个字段没有在同一个 运行时包(§5.3)中定义过，那 objectref 所指向的对象的类型必须为当 前类或者当前类的子类。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||		在字段的符号引用解析过程中，任何在§5.4.3.2 中描述过的异常都可能会 被抛出。
 	   链接时异常			||		另外，如果已解析的字段是一个静态(static)字段，getfield 指令将会 抛出一个 IncompatibleClassChangeError 异常
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -148,4 +149,4 @@ func (s I_getfield)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

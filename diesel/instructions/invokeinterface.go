@@ -1,28 +1,28 @@
 package instructions
 
 import (
-	"../runtime"
-	"../../utils"
-	"../oil/types"
-	"reflect"
-	"../variator"
 	"../../loader/binary"
 	"../../loader/binary/item"
+	"../../utils"
+	"../oil/types"
+	"../runtime"
+	"../variator"
+	"reflect"
 )
 
 type I_invokeinterface struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x74] = &I_invokeinterface{}
 }
 
-func (s I_invokeinterface)Stroke(ctx *runtime.Context) error {
+func (s I_invokeinterface) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "invokeinterface exce >>>>>>>>>\n")
 
-	methodIndex := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC + 1])
+	methodIndex := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC+1])
 	object, _ := ctx.CurrentFrame.PopFrame()
-	count := int(ctx.Code[ctx.PC + 2])
+	count := int(ctx.Code[ctx.PC+2])
 	ctx.PC += 4
 
 	if object != nil && reflect.TypeOf(object) != reflect.TypeOf(&types.Jreference{}) {
@@ -61,7 +61,7 @@ func (s I_invokeinterface)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_invokeinterface)Test() *runtime.Context {
+func (s I_invokeinterface) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -73,11 +73,12 @@ func (s I_invokeinterface)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x0, 0x1, 0x1, 0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0, 0x0, 0x1, 0x1, 0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		调用动态方法
@@ -92,7 +93,7 @@ func (s I_invokeinterface)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		0
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		invokeinterface = 185(0xb9)
 ======================================================================================
@@ -100,7 +101,7 @@ func (s I_invokeinterface)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，
 ======================================================================================
-						||		
+						||
 		描述				||		无符号数 indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6)的运 行时常量池的索引值，
 						||		构建方式为(indexbyte1 << 8)| indexbyte2，
 						||		该索引所指向的运行时常量池项应当是一个接口方法(§5.1)的符号引用，
@@ -133,7 +134,7 @@ func (s I_invokeinterface)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 	   链接时异常			||		在类、接口或者数组的符号解析阶段，任何在§5.4.3.4 章节中描述的异常 都可能被抛出。
 						||
 ======================================================================================
@@ -164,4 +165,4 @@ func (s I_invokeinterface)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

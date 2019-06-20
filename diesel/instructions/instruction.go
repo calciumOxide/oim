@@ -13,7 +13,7 @@ type Storker interface {
 	Test() *runtime.Context
 }
 
-func (s Instructions)Stroke(ctx *runtime.Context) error {
+func (s Instructions) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "%x \n", s)
 	ctx = INSTRUCTION_MAP[s].Test()
 	ctx.Clazz = binary.GetClass("com/guazi/znkf/call/aftermarket/bg/ApiApplication")
@@ -22,7 +22,6 @@ func (s Instructions)Stroke(ctx *runtime.Context) error {
 	ctx.Handle()
 	return nil
 }
-
 
 /**
 ======================================================================================
@@ -62,4 +61,4 @@ func (s Instructions)Stroke(ctx *runtime.Context) error {
 						||
 						||
 ======================================================================================
- */
+*/

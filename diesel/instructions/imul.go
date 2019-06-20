@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_imul struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x68] = &I_imul{}
 }
 
-func (s I_imul)Stroke(ctx *runtime.Context) error {
+func (s I_imul) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "imul exce >>>>>>>>>\n")
 
 	value2, _ := ctx.CurrentFrame.PopFrame()
@@ -30,7 +30,7 @@ func (s I_imul)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_imul)Test() *runtime.Context {
+func (s I_imul) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -40,11 +40,12 @@ func (s I_imul)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		int 类型数据乘法
@@ -53,13 +54,13 @@ func (s I_imul)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		imul = 104(0x68)
 ======================================================================================
@@ -75,13 +76,13 @@ func (s I_imul)Test() *runtime.Context {
 						||		尽管可能发生上限溢出，但是 imul 指令的执行过程中不会抛出任何运行时异 常。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -91,4 +92,4 @@ func (s I_imul)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

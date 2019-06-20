@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_drem struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x73] = &I_drem{}
 }
 
-func (s I_drem)Stroke(ctx *runtime.Context) error {
+func (s I_drem) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "drem exce >>>>>>>>>\n")
 
 	value2, _ := ctx.CurrentFrame.PopFrame()
@@ -32,32 +32,32 @@ func (s I_drem)Stroke(ctx *runtime.Context) error {
 		ctx.CurrentFrame.PushFrame(types.JDN)
 		return nil
 	}
-	
+
 	if value1 == types.JDO || value1 == types.JDU {
 		ctx.CurrentFrame.PushFrame(types.JDN)
 		return nil
 	}
-	
+
 	if reflect.TypeOf(value2) == reflect.TypeOf(types.JDO) || reflect.TypeOf(value2) == reflect.TypeOf(types.JDU) {
 		ctx.CurrentFrame.PushFrame(value1)
 		return nil
 	}
 
-	if reflect.TypeOf(value2) == reflect.TypeOf(types.Jdouble(0))  && value2.(types.Jdouble) == 0.0 {
+	if reflect.TypeOf(value2) == reflect.TypeOf(types.Jdouble(0)) && value2.(types.Jdouble) == 0.0 {
 		ctx.CurrentFrame.PushFrame(types.JDN)
 		return nil
 	}
 
-	if reflect.TypeOf(value1) == reflect.TypeOf(types.Jdouble(0))  && value1.(types.Jdouble) == 0.0 {
+	if reflect.TypeOf(value1) == reflect.TypeOf(types.Jdouble(0)) && value1.(types.Jdouble) == 0.0 {
 		ctx.CurrentFrame.PushFrame(value1)
 		return nil
 	}
 
-	ctx.CurrentFrame.PushFrame(types.Jdouble(value1.(types.Jdouble) - value2.(types.Jdouble) * types.Jdouble(int64(value1.(types.Jdouble) / value2.(types.Jdouble)))))
+	ctx.CurrentFrame.PushFrame(types.Jdouble(value1.(types.Jdouble) - value2.(types.Jdouble)*types.Jdouble(int64(value1.(types.Jdouble)/value2.(types.Jdouble)))))
 	return nil
 }
 
-func (s I_drem)Test() *runtime.Context {
+func (s I_drem) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -67,11 +67,12 @@ func (s I_drem)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		double 类型数据求余
@@ -80,13 +81,13 @@ func (s I_drem)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		drem = 115(0x73)
 ======================================================================================
@@ -94,7 +95,7 @@ func (s I_drem)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||
 						||		value1 和 value2 都必须为 double 类型数据，指令执行时，value1 和 value2 从操作数栈中出栈，
 						||		并且经过数值集合转换(§2.8.3)后得到值 value1’和 value2’，
@@ -123,13 +124,13 @@ func (s I_drem)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -139,4 +140,4 @@ func (s I_drem)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

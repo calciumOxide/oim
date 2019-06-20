@@ -1,30 +1,30 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../lube"
 	"../oil/types"
+	"../runtime"
 )
 
 type I_anewarray struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xbd] = &I_anewarray{}
 }
 
-func (s I_anewarray)Stroke(ctx *runtime.Context) error {
+func (s I_anewarray) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "anewarray exce >>>>>>>>>\n")
 
 	count, _ := ctx.CurrentFrame.PopFrame()
 	index := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC])
 	//TODO   index的类型检查
 	array, _ := lube.AllocArray(count.(uint32))
-	value := &types.Jarray {
-		Dimension: 1,
+	value := &types.Jarray{
+		Dimension:   1,
 		ElementJype: index,
-		Reference: array,
+		Reference:   array,
 	}
 
 	ctx.CurrentFrame.PushFrame(value)
@@ -32,17 +32,18 @@ func (s I_anewarray)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_anewarray)Test() *runtime.Context {
+func (s I_anewarray) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(uint32(4))
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x1},
-		CurrentFrame: f,
+		Code:              []byte{0x0, 0x1},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		创建一个组件类型为 reference 类型的数组
@@ -53,11 +54,11 @@ func (s I_anewarray)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		indexbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		anewarray = 189(0xbd)
 ======================================================================================
@@ -65,7 +66,7 @@ func (s I_anewarray)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，arrayref
 ======================================================================================
-						||		
+						||
 						||
 						||		count 应为 int 类型的数据，指令执行时它将从操作数栈中出栈，它代表了 要创建多大的数组。
 						||		indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6)的运行时常量池的索引值，构建方式为(indexbyte1 << 8)| indexbyte2，
@@ -75,13 +76,13 @@ func (s I_anewarray)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||		在类、接口或者数组的符号解析阶段，任何在§5.4.3.1 章节中描述的异常 都可能被抛出。
 						||
 	   链接时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||		另外，如果 count 值小于 0 的话，anewarray 指令将会抛出一个 NegativeArraySizeException 异常。
@@ -99,4 +100,4 @@ func (s I_anewarray)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

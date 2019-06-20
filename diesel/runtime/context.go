@@ -1,10 +1,10 @@
 package runtime
 
 import (
-	"reflect"
-	"../oil/types"
-	"../oil"
 	"../../loader/binary/attribute"
+	"../oil"
+	"../oil/types"
+	"reflect"
 )
 
 type Context struct {
@@ -24,12 +24,12 @@ type Context struct {
 
 type Frame struct {
 	Layers []interface{}
-	Depth uint32
+	Depth  uint32
 }
 
 type Aborigines struct {
 	Layers []interface{}
-	Count uint32
+	Count  uint32
 }
 
 //type Layer struct {
@@ -37,7 +37,7 @@ type Aborigines struct {
 //	Value interface{}
 //}
 
-func (ctx *Context)InvokeMethod(method *oil.Method, args []interface{}) *Context {
+func (ctx *Context) InvokeMethod(method *oil.Method, args []interface{}) *Context {
 	callee := &Context{
 		PC: 0,
 		CurrentFrame: &Frame{
@@ -59,17 +59,17 @@ func (ctx *Context)InvokeMethod(method *oil.Method, args []interface{}) *Context
 	return ctx
 }
 
-func (s *Context)PushContext(ctx *Context) error {
-	
+func (s *Context) PushContext(ctx *Context) error {
+
 	s.CurrentFrame.PushFrame(s.PC)
 	s.PC = ctx.PC
-	
+
 	s.FrameStack = append(s.FrameStack, s.CurrentFrame)
 	s.CurrentFrame = ctx.CurrentFrame
-	
+
 	s.AboriginesStack = append(s.AboriginesStack, s.CurrentAborigines)
 	s.CurrentAborigines = ctx.CurrentAborigines
-	
+
 	s.MethodStack = append(s.MethodStack, s.CurrentMethod)
 	s.CurrentMethod = ctx.CurrentMethod
 
@@ -80,11 +80,11 @@ func (s *Context)PushContext(ctx *Context) error {
 	return nil
 }
 
-func (s *Context)PopContext() (*Context, error) {
+func (s *Context) PopContext() (*Context, error) {
 
 	f := s.CurrentFrame
-	s.CurrentFrame = s.FrameStack[len(s.FrameStack) - 1]
-	s.FrameStack = s.FrameStack[:len(s.FrameStack) - 1]
+	s.CurrentFrame = s.FrameStack[len(s.FrameStack)-1]
+	s.FrameStack = s.FrameStack[:len(s.FrameStack)-1]
 
 	pc, _ := s.CurrentFrame.PopFrame()
 	s.PC = pc.(uint32)
@@ -93,27 +93,27 @@ func (s *Context)PopContext() (*Context, error) {
 		s.CurrentFrame.PushFrame(l)
 	}
 
-	s.Code = s.CodeStack[len(s.CodeStack) - 1]
-	s.CodeStack = s.CodeStack[:len(s.CodeStack) - 1]
+	s.Code = s.CodeStack[len(s.CodeStack)-1]
+	s.CodeStack = s.CodeStack[:len(s.CodeStack)-1]
 
-	s.CurrentAborigines = s.AboriginesStack[len(s.AboriginesStack) - 1]
-	s.AboriginesStack = s.AboriginesStack[:len(s.AboriginesStack) - 1]
+	s.CurrentAborigines = s.AboriginesStack[len(s.AboriginesStack)-1]
+	s.AboriginesStack = s.AboriginesStack[:len(s.AboriginesStack)-1]
 
-	s.CurrentMethod = s.MethodStack[len(s.MethodStack) - 1]
-	s.MethodStack = s.MethodStack[:len(s.MethodStack) - 1]
+	s.CurrentMethod = s.MethodStack[len(s.MethodStack)-1]
+	s.MethodStack = s.MethodStack[:len(s.MethodStack)-1]
 
 	return s, nil
 }
 
-func (s *Context)Throw(e interface{}) error {
+func (s *Context) Throw(e interface{}) error {
 	s.Opoos = true
 	s.CurrentFrame.Clean()
 	s.CurrentFrame.PushFrame(e)
 	return nil
 }
 
-func (s *Context)Handle() error {
-	if (!s.Opoos) {
+func (s *Context) Handle() error {
+	if !s.Opoos {
 		return nil
 	}
 	attr, _ := s.CurrentMethod.GetAttribute(binary.CODE_ATTR)
@@ -139,9 +139,8 @@ func IsCatched(r *types.Jreference, et *attribute.ExceptTable) bool {
 	return r.Reference.(*types.Jobject).ClassTypeIndex == et.CatchType
 }
 
-
-func (s *Frame)PushFrame(l interface{}) error {
-	if s.Depth >= 1 && IsDoubleLong(s.Layers[s.Depth - 1]) {
+func (s *Frame) PushFrame(l interface{}) error {
+	if s.Depth >= 1 && IsDoubleLong(s.Layers[s.Depth-1]) {
 		panic("set local variable double_long low byte.")
 	}
 	s.Layers = append(s.Layers, l)
@@ -153,44 +152,43 @@ func (s *Frame)PushFrame(l interface{}) error {
 	return nil
 }
 
-func (s *Frame)PopFrame() (interface{}, error) {
+func (s *Frame) PopFrame() (interface{}, error) {
 	s.Depth -= 1
 	l := s.Layers[s.Depth]
-	s.Layers = s.Layers[0 : s.Depth]
-	if s.Depth > 1 && IsDoubleLong(s.Layers[s.Depth - 1]) {
+	s.Layers = s.Layers[0:s.Depth]
+	if s.Depth > 1 && IsDoubleLong(s.Layers[s.Depth-1]) {
 		s.Depth -= 1
 		l = s.Layers[s.Depth]
-		s.Layers = s.Layers[0 : s.Depth]
+		s.Layers = s.Layers[0:s.Depth]
 	}
 	return l, nil
 }
 
-func (s *Frame)PeekFrame() (interface{}, error) {
-	layer := s.Layers[s.Depth - 1]
-	if s.Depth > 2 && IsDoubleLong(s.Layers[s.Depth - 2]) {
-		layer = s.Layers[s.Depth - 2]
+func (s *Frame) PeekFrame() (interface{}, error) {
+	layer := s.Layers[s.Depth-1]
+	if s.Depth > 2 && IsDoubleLong(s.Layers[s.Depth-2]) {
+		layer = s.Layers[s.Depth-2]
 	}
 	return layer, nil
 }
 
-func (s *Frame)Clean() (error) {
+func (s *Frame) Clean() error {
 	s.Layers = s.Layers[0:0]
 	s.Depth = 0
 	return nil
 }
 
-
-func (s *Aborigines)GetAborigines(i uint32) (interface{}, error) {
+func (s *Aborigines) GetAborigines(i uint32) (interface{}, error) {
 	return s.Layers[i], nil
 }
 
-func (s *Aborigines)SetAborigines(i uint32, l interface{}) (error) {
-	
-	if i >= 1 && IsDoubleLong(s.Layers[i - 1].(string)) {
+func (s *Aborigines) SetAborigines(i uint32, l interface{}) error {
+
+	if i >= 1 && IsDoubleLong(s.Layers[i-1].(string)) {
 		panic("set local variable double_long low byte.")
 	}
 	if IsDoubleLong(l) {
-		s.Layers[i + 1] = "double_long"
+		s.Layers[i+1] = "double_long"
 	}
 	s.Layers[i] = l
 	return nil
@@ -233,4 +231,3 @@ func (s *Aborigines)SetAboriginesX2(i uint32, l interface{}) (error) {
 	return nil
 }
 */
-

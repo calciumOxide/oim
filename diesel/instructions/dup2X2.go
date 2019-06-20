@@ -1,20 +1,20 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
+	"../runtime"
 	"../variator"
-	)
+)
 
 type I_dup2X2 struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x5e] = &I_dup2X2{}
 }
 
-func (s I_dup2X2)Stroke(ctx *runtime.Context) error {
+func (s I_dup2X2) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "dup2X2 exce >>>>>>>>>\n")
 
 	value1, _ := ctx.CurrentFrame.PopFrame()
@@ -64,7 +64,7 @@ func (s I_dup2X2)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_dup2X2)Test() *runtime.Context {
+func (s I_dup2X2) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -74,11 +74,12 @@ func (s I_dup2X2)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		复制操作数栈栈顶 1 个或 2 个值，并插入到栈顶以下 2 个、3 个或者 3 个值之 后
@@ -87,13 +88,13 @@ func (s I_dup2X2)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		dup2_x2 = 94(0x5e)
 ======================================================================================
@@ -118,13 +119,13 @@ func (s I_dup2X2)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -134,4 +135,4 @@ func (s I_dup2X2)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

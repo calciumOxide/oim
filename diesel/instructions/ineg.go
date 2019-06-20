@@ -1,21 +1,21 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_ineg struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x74] = &I_ineg{}
 }
 
-func (s I_ineg)Stroke(ctx *runtime.Context) error {
+func (s I_ineg) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "ineg exce >>>>>>>>>\n")
 
 	value, _ := ctx.CurrentFrame.PopFrame()
@@ -30,7 +30,7 @@ func (s I_ineg)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_ineg)Test() *runtime.Context {
+func (s I_ineg) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -40,11 +40,12 @@ func (s I_ineg)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0},
-		CurrentFrame: f,
+		Code:              []byte{0x0},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		int 类型数据取负运算
@@ -53,13 +54,13 @@ func (s I_ineg)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||
 						||------------------------------------------------------------
-						||		
+						||
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		ineg = 116(0x74)
 ======================================================================================
@@ -67,7 +68,7 @@ func (s I_ineg)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，result
 ======================================================================================
-						||		
+						||
 						||		value 必须为 int 类型数据，指令执行时，value 从操作数栈中出栈，接着 对这个数进行算术取负运算，运算结果-value 被压入到操作数栈中。
 						||
 		描述				||		对于 int 类型数据，取负运算等同于与零做减法运算。因为 Java 虚拟机使用 二进制补码来表示整数，而且二进制补码值的范围并不是完全对称的，int 类 型中绝对值最大的负数取反的结果也依然是它本身。
@@ -75,13 +76,13 @@ func (s I_ineg)Test() *runtime.Context {
 						||		对于所有的 int 类型值 x 来说，-x 等于(~x)+1
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -91,4 +92,4 @@ func (s I_ineg)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

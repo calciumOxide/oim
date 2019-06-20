@@ -1,17 +1,17 @@
 package instructions
 
 import (
-	"../runtime"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
+	"reflect"
 )
 
 type I_ifX struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0x99] = &I_ifX{}
 	INSTRUCTION_MAP[0x9a] = &I_ifX{}
 	INSTRUCTION_MAP[0x9b] = &I_ifX{}
@@ -20,11 +20,11 @@ func init()  {
 	INSTRUCTION_MAP[0x9e] = &I_ifX{}
 }
 
-func (s I_ifX)Stroke(ctx *runtime.Context) error {
+func (s I_ifX) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "ifX exce >>>>>>>>>\n")
 
-	op := ctx.Code[ctx.PC - 1]
-	branch := uint32(ctx.Code[ctx.PC]) << 8 | uint32(ctx.Code[ctx.PC + 1])
+	op := ctx.Code[ctx.PC-1]
+	branch := uint32(ctx.Code[ctx.PC])<<8 | uint32(ctx.Code[ctx.PC+1])
 	ctx.PC += 2
 	value, _ := ctx.CurrentFrame.PopFrame()
 
@@ -41,7 +41,7 @@ func (s I_ifX)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_ifX)Test() *runtime.Context {
+func (s I_ifX) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -54,11 +54,12 @@ func (s I_ifX)Test() *runtime.Context {
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x99, 0x0, 12},
-		CurrentFrame: f,
+		Code:              []byte{0x99, 0x0, 12},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		整数与零比较的条件分支判断
@@ -69,11 +70,11 @@ func (s I_ifX)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		branchbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 						||		ifeq = 153(0x99)
 		结构				||------------------------------------------------------------
@@ -91,7 +92,7 @@ func (s I_ifX)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，
 ======================================================================================
-						||		
+						||
 						||
 						||		value 必须为 int 类型数据，指令执行时，value 从操作数栈中出栈，
 						||		然后进行比较运算(所有比较都是带符号的)，比较的规则如下:
@@ -109,13 +110,13 @@ func (s I_ifX)Test() *runtime.Context {
 						||		另外，如果比较结果为假，那程序将继续执行 if_acmp<cond>指令后面的其 他直接码指令。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||
 	   运行时异常			||
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -123,4 +124,4 @@ func (s I_ifX)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

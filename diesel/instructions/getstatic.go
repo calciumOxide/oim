@@ -1,26 +1,26 @@
 package instructions
 
 import (
-	"../runtime"
+	"../../loader/binary"
+	"../../loader/binary/item"
 	"../../utils"
 	"../oil/types"
-	"reflect"
+	"../runtime"
 	"../variator"
-	"../../loader/binary/item"
-	"../../loader/binary"
+	"reflect"
 )
 
 type I_getstatic struct {
 }
 
-func init()  {
+func init() {
 	INSTRUCTION_MAP[0xb2] = &I_getstatic{}
 }
 
-func (s I_getstatic)Stroke(ctx *runtime.Context) error {
+func (s I_getstatic) Stroke(ctx *runtime.Context) error {
 	utils.Log(1, "getstatic exce >>>>>>>>>\n")
 
-	index := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC + 1])
+	index := (uint16(ctx.Code[ctx.PC]) << 8) | uint16(ctx.Code[ctx.PC+1])
 	ctx.PC += 2
 
 	cp, _ := ctx.Clazz.GetConstant(index)
@@ -79,7 +79,7 @@ func (s I_getstatic)Stroke(ctx *runtime.Context) error {
 	return nil
 }
 
-func (s I_getstatic)Test() *runtime.Context {
+func (s I_getstatic) Test() *runtime.Context {
 	f := new(runtime.Frame)
 	f.PushFrame(&types.Jarray{
 		Reference: []types.Jbyte{1, 2, 3, 4},
@@ -89,17 +89,18 @@ func (s I_getstatic)Test() *runtime.Context {
 	f.PushFrame(types.Jreference{
 		Reference: types.Jobject{
 			ClassTypeIndex: 4,
-			Fileds: fields,
+			Fileds:         fields,
 		},
 	})
 	a := new(runtime.Aborigines)
 	a.Layers = append(a.Layers, &[]uint32{1234})
 	return &runtime.Context{
-		Code: []byte{0x0, 0x0, 0x5},
-		CurrentFrame: f,
+		Code:              []byte{0x0, 0x0, 0x5},
+		CurrentFrame:      f,
 		CurrentAborigines: a,
 	}
 }
+
 /**
 ======================================================================================
 		操作				||		获取对象的静态字段值
@@ -110,11 +111,11 @@ func (s I_getstatic)Test() *runtime.Context {
 						||------------------------------------------------------------
 						||		indexbyte2
 		格式				||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 						||------------------------------------------------------------
-						||		
+						||
 ======================================================================================
 		结构				||		getstatic = 178(0xb2)
 ======================================================================================
@@ -122,7 +123,7 @@ func (s I_getstatic)Test() *runtime.Context {
 	   操作数栈			||------------------------------------------------------------
 						||		...，value
 ======================================================================================
-						||		
+						||
 						||		无符号数 indexbyte1 和 indexbyte2 用于构建一个当前类(§2.6)的运 行时常量池的索引值，
 						||		构建方式为(indexbyte1 << 8)| indexbyte2，该索引所指向的运行时常量池项应当是一个字段(§5.1)的符号引用，
 						||		它包 含了字段的名称和描述符，以及包含该字段的类或接口的符号引用。
@@ -131,13 +132,13 @@ func (s I_getstatic)Test() *runtime.Context {
 						||		参数所指定的类或接口的该字段的值将会被取出，并推入到操作数栈顶。
 						||
 ======================================================================================
-						||		
+						||
 						||
 						||		在字段的符号引用解析过程中，任何在§5.4.3.2 中描述过的异常都可能会 被抛出。
 	   链接时异常			||		另外，如果已解析的字段是一个非静态(not static)字段，getstatic 指令将会抛出一个 IncompatibleClassChangeError 异常
-						||		
-						||		
-						||		
+						||
+						||
+						||
 ======================================================================================
 						||
 						||
@@ -155,4 +156,4 @@ func (s I_getstatic)Test() *runtime.Context {
 						||
 						||
 ======================================================================================
- */
+*/

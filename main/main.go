@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"../diesel"
 	"../loader/butcher"
 	"../loader/butcher/rope"
-	"../diesel"
-			)
+	"fmt"
+)
 
-
-func main(){
+func main() {
 
 	//clazzName := ""
 	bytes, _ := rope.ReadClass("")

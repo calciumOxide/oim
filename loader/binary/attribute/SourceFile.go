@@ -8,6 +8,7 @@ SourceFile 属性是可选定长字段，位于 ClassFile(§4.1)结构的属性�
 type SourceFile struct {
 	SourceFileIndex uint16
 }
+
 /*
 sourcefile_index 项的值必须是一个对常量池的有效索引。
 常量池在该索引处的成员 必须是 CONSTANT_Utf8_info(§4.4.7)结构，表示一个字符串。
@@ -17,7 +18,7 @@ sourcefile_index 项引用字符串表示被编译的 Class 文件的源文件�
 */
 
 func AllocSourceFile(b []byte) (*SourceFile, int) {
-	return &SourceFile {
+	return &SourceFile{
 		SourceFileIndex: utils.BigEndian2Little4U2(b[:2]),
 	}, 2
 }

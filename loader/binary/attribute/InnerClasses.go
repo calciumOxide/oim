@@ -41,7 +41,7 @@ func AllocInnerClasses(b []byte) (*InnerClasses, int) {
 		ClassCount: utils.BigEndian2Little4U2(b[:2]),
 	}
 	for i := uint16(0); i < v.ClassCount; i++ {
-		c, s := AllocClasses(b[offset : offset + 8])
+		c, s := AllocClasses(b[offset : offset+8])
 		v.Classes = append(v.Classes, c)
 		offset += s
 	}
@@ -50,9 +50,9 @@ func AllocInnerClasses(b []byte) (*InnerClasses, int) {
 
 func AllocClasses(b []byte) (*Classes, int) {
 	return &Classes{
-		InnerClassIndex: utils.BigEndian2Little4U2(b[:2]),
-		OuterClassIndex: utils.BigEndian2Little4U2(b[2 : 4]),
-		InnerNameIndex: utils.BigEndian2Little4U2(b[4 : 6]),
-		InnerClassAccessFlags: InnerClassAccessFlags(utils.BigEndian2Little4U2(b[6 : 8])),
+		InnerClassIndex:       utils.BigEndian2Little4U2(b[:2]),
+		OuterClassIndex:       utils.BigEndian2Little4U2(b[2:4]),
+		InnerNameIndex:        utils.BigEndian2Little4U2(b[4:6]),
+		InnerClassAccessFlags: InnerClassAccessFlags(utils.BigEndian2Little4U2(b[6:8])),
 	}, 8
 }

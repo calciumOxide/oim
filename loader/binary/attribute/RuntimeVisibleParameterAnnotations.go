@@ -9,14 +9,13 @@ RuntimeVisibleParameterAnnotations 属性是一个变长属性，位于 method_i
 用于 保存当前方法的参数的所有可见的 Java 语言注解。Java 虚拟机必须保证这些注解可被反射的 API 使用。
 */
 type RuntimeVisibleParameterAnnotations struct {
-	ParameterCount uint16
+	ParameterCount      uint16
 	ParameterAnnotation []*ParameterAnnotation
-
 }
 
 type ParameterAnnotation struct {
 	AnnotationCount uint16
-	Annotation []*Annotation
+	Annotation      []*Annotation
 }
 
 /*
@@ -35,7 +34,7 @@ type RuntimeInvisibleParameterAnnotations struct {
 
 func AllocRuntimeVisibleParameterAnnotations(b []byte) (*RuntimeVisibleParameterAnnotations, int) {
 	offset := 2
-	v := RuntimeVisibleParameterAnnotations {
+	v := RuntimeVisibleParameterAnnotations{
 		ParameterCount: utils.BigEndian2Little4U2(b[:2]),
 	}
 	for i := uint16(0); i < v.ParameterCount; i++ {
@@ -48,7 +47,7 @@ func AllocRuntimeVisibleParameterAnnotations(b []byte) (*RuntimeVisibleParameter
 
 func AllocRuntimeInvisibleParameterAnnotations(b []byte) (*RuntimeInvisibleParameterAnnotations, int) {
 	offset := 2
-	v := RuntimeInvisibleParameterAnnotations {
+	v := RuntimeInvisibleParameterAnnotations{
 		ParameterCount: utils.BigEndian2Little4U2(b[:2]),
 	}
 	for i := uint16(0); i < v.ParameterCount; i++ {
@@ -61,7 +60,7 @@ func AllocRuntimeInvisibleParameterAnnotations(b []byte) (*RuntimeInvisibleParam
 
 func AllocParameterAnnotation(b []byte) (*ParameterAnnotation, int) {
 	offset := 2
-	v := ParameterAnnotation {
+	v := ParameterAnnotation{
 		AnnotationCount: utils.BigEndian2Little4U2(b[:2]),
 	}
 	for i := uint16(0); i < v.AnnotationCount; i++ {
